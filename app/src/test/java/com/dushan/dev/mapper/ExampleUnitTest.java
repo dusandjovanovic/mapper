@@ -1,4 +1,4 @@
-package edu.dusan.mapper;
+package com.dushan.dev.mapper;
 
 import org.junit.Test;
 

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Activities.MainActivity">
+
+    <include layout="@layout/main_toolbar"
+        android:id="@+id/mainToolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/lightBlue"
+
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/recentTab"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textColor="@color/altTextColor"
+            android:gravity="center"
+            android:text="@string/recent"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/savedTab"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:textColor="@color/unselectedTabTextColor"
+            android:text="@string/saved"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/viewTab"
+            android:textColor="@color/unselectedTabTextColor"
+            android:layout_width="0dp"
+            android:textSize="18sp"
+            android:text="@string/view"
+            android:gravity="center"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textAllCaps="true"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/lightBlue"
+
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/recentHighlight"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/tabHighlightColor"
+            android:layout_weight="1"/>
+
+        <View
+            android:id="@+id/savedHighlight"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/lightBlue"
+            android:layout_weight="1"/>
+        <View
+            android:id="@+id/viewHighlight"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/lightBlue"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/mainRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+</LinearLayout>

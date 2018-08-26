@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimaryDark">#035BFF</color>
+    <color name="colorAccent">#035BFF</color>
+
+    <color name="homePageStatusBarColor">#151B26</color>
+    <color name="lightBlue">#2D82FF</color>
+    <color name="darkBlue">#222936</color>
+    <color name="mainTextColor">#000000</color>
+    <color name="altTextColor">#FFFFFF</color>
+    <color name="unselectedTabTextColor">#ABCDFF</color>
+    <color name="tabHighlightColor">#18FFFF</color>
 </resources>

@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">mapper</string>
+
+    <string name="app_description">mark and discover places</string>
+
+    <!--HomePageActivity-->
+    <string name="sign_in">Sign in</string>
+    <string name="get_started">Get started</string>
+
+    <!--LoginActivity-->
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="remember_me">Remember me</string>
+    <string name="next">Next</string>
+
+    <!--MainActivity-->
+    <string name="recent">Recent</string>
+    <string name="saved">Saved</string>
+    <string name="view">View</string>
+
 </resources>

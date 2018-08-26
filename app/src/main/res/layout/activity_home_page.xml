@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/darkBlue"
+    tools:context=".HomePageActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:paddingTop="16dp"
+        android:layout_height="200dp"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/mapper_map" />
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="36dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/mapper_logo" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:paddingTop="64dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="@color/altTextColor"
+            android:textSize="36sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_description"
+            android:textColor="@color/altTextColor"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="48dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/homePageGetStartedBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_bg_blue"
+            android:text="@string/get_started"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/altTextColor" />
+
+        <Button
+            android:id="@+id/homePageSignInBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_bg_white"
+            android:text="@string/sign_in"
+            android:textColor="@color/lightBlue" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

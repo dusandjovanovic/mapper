@@ -1,13 +1,15 @@
-package edu.dusan.mapper;
+package com.dushan.dev.mapper.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class MapperActivity extends AppCompatActivity {
+import com.dushan.dev.mapper.R;
+
+public class GetStartedActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mapper);
+        setContentView(R.layout.activity_get_started);
     }
 }
