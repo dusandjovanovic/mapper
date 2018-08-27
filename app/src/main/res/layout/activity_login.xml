@@ -18,9 +18,10 @@
         android:src="@drawable/mapper_logo" />
     
     <EditText
-        android:id="@+id/loginUsernameEditText"
+        android:id="@+id/loginEmailEditText"
         android:layout_width="match_parent"
-        android:hint="@string/username"
+        android:hint="@string/email"
+        android:maxLines="1"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
@@ -29,6 +30,7 @@
     <EditText
         android:id="@+id/loginPasswordEditText"
         android:layout_width="match_parent"
+        android:inputType="textPassword"
         android:layout_height="wrap_content"
         android:hint="@string/password"
         android:layout_marginEnd="16dp"
@@ -45,6 +47,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:orientation="vertical"
         android:layout_weight="1">
         <Button
             android:id="@+id/loginNextButton"
@@ -62,6 +70,12 @@
             android:textColor="@color/altTextColor" />
     </RelativeLayout>
 
-
+    <ProgressBar
+        android:id="@+id/loginProgressBar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="20dp"
+        android:visibility="gone" />
 
 </LinearLayout>

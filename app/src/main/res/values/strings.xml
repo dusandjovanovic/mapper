@@ -18,4 +18,12 @@
     <string name="saved">Saved</string>
     <string name="view">View</string>
 
+    <!--GetStartedActivity-->
+    <string name="add_photo">Add a profile photo</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="last_name">Last name</string>
+    <string name="phone_number">Phone number</string>
+
+
 </resources>
