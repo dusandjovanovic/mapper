@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/card_margin"
+        android:elevation="3dp"
+        card_view:cardCornerRadius="@dimen/card_album_radius">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/markerImage"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/card_cover_height"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="fitXY" />
+
+            <RelativeLayout
+                android:id="@+id/markerWrapper"
+                android:layout_below="@id/markerImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/markerName"
+                    android:ellipsize="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/card_title_padding"
+                    android:paddingRight="@dimen/card_title_padding"
+                    android:paddingTop="@dimen/card_title_padding"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/card_title" />
+
+                <TextView
+                    android:id="@+id/markerCategory"
+                    android:ellipsize="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/markerName"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:paddingLeft="@dimen/category_padding"
+                    android:paddingRight="@dimen/category_padding"
+                    android:layout_marginStart="@dimen/card_title_padding"
+                    android:layout_marginEnd="@dimen/card_title_padding"
+                    android:background="@drawable/view_border"
+                    android:textAlignment="center"
+                    android:gravity="center_vertical"
+                    android:textSize="@dimen/category" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/markerDescription"
+                android:ellipsize="end"
+                android:minLines="1"
+                android:maxLines="3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/markerWrapper"
+                android:paddingTop="@dimen/description_padding"
+                android:paddingLeft="@dimen/description_padding"
+                android:paddingRight="@dimen/description_padding"
+                android:paddingBottom="@dimen/description_padding"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/description" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

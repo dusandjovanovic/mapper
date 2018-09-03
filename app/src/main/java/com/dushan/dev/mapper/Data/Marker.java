@@ -1,7 +1,52 @@
 package com.dushan.dev.mapper.Data;
 
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
+
+@IgnoreExtraProperties
 public class Marker {
-    private String name, address, category, author, description, imageURL;
+    private String name;
+    private String address;
+    private String category;
+    private String author;
+    private String description;
+    private String imageURL;
+
+    private double latitude;
+    private double longitude;
+
+    @Exclude
+    public String key;
+
+    public Marker () { }
+
+    public Marker (String name, String address, String category, String author, String description, String imageURL, double latitude, double longitude) {
+        this.name = name;
+        this.address = address;
+        this.category = category;
+        this.author = author;
+        this.description = description;
+        this.imageURL = imageURL;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
 
     public String getName() {
         return name;

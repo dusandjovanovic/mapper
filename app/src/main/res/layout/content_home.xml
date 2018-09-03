@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Activities.MainActivity">
+    tools:context=".Activities.HomeActivity">
 
-    <include layout="@layout/main_toolbar"
+    <include layout="@layout/view_toolbar"
         android:id="@+id/mainToolbar" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/lightBlue"
+        android:background="@color/colorPrimary"
 
         android:orientation="horizontal">
 
@@ -61,7 +61,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/lightBlue"
+        android:background="@color/colorPrimary"
 
         android:orientation="horizontal">
 
@@ -76,13 +76,13 @@
             android:id="@+id/savedHighlight"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:background="@color/lightBlue"
+            android:background="@color/colorPrimary"
             android:layout_weight="1"/>
         <View
             android:id="@+id/viewHighlight"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:background="@color/lightBlue"
+            android:background="@color/colorPrimary"
             android:layout_weight="1"/>
 
     </LinearLayout>
@@ -91,6 +91,10 @@
         android:id="@+id/mainRecycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:scrollbars="vertical"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"/>
 
 </LinearLayout>

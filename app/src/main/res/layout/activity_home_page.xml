@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/darkBlue"
-    tools:context=".HomePageActivity">
+    android:background="@color/colorPrimaryDark"
+    tools:context=".Activities.HomePageActivity">
 
     <ImageView
         android:layout_width="match_parent"
@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_bg_white"
             android:text="@string/sign_in"
-            android:textColor="@color/lightBlue" />
+            android:textColor="@color/colorAccent" />
 
     </LinearLayout>
 

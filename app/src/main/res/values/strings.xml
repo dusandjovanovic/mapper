@@ -5,6 +5,7 @@
 
     <!--HomePageActivity-->
     <string name="sign_in">Sign in</string>
+    <string name="sign_out">Sign out</string>
     <string name="get_started">Get started</string>
 
     <!--LoginActivity-->
@@ -13,7 +14,7 @@
     <string name="remember_me">Remember me</string>
     <string name="next">Next</string>
 
-    <!--MainActivity-->
+    <!--HomeActivity-->
     <string name="recent">Recent</string>
     <string name="saved">Saved</string>
     <string name="view">View</string>
@@ -25,5 +26,34 @@
     <string name="last_name">Last name</string>
     <string name="phone_number">Phone number</string>
 
+    <!--NavigationDrawer-->
+    <string name="home">Home</string>
+    <string name="discover">Discover</string>
+    <string name="search">Search</string>
+    <string name="friends">Friends</string>
+    <string name="statistics">Statistics</string>
+    <string name="settings">Settings</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">mapper</string>
+    <string name="nav_header_subtitle">support@mapper.io</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="miscellaneous">Miscellaneous</string>
+    <string name="action_settings">Settings</string>
 
+    <!--Marker-->
+    <string name="description">Description</string>
+    <string name="author">Posted by</string>
+    <string name="address">Address</string>
+    <string name="category">Category</string>
+    <string name="get_directions">Get directions</string>
+
+    <!--Services-->
+    <string name="progress_uploading">Background service: uploading</string>
+    <string name="progress_downloading">Background service: downloading</string>
+    <string name="upload_success">Background service: success</string>
+    <string name="upload_failure">Background service: failure</string>
+    <string name="download_success">Background service: success</string>
+    <string name="download_failure">Background service: failure</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.dushan.dev.mapper.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,27 +12,31 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.dushan.dev.mapper.Activities.HomeActivity;
+import com.dushan.dev.mapper.Activities.LoginActivity;
 import com.dushan.dev.mapper.Data.Marker;
+import com.dushan.dev.mapper.Interfaces.ClickListener;
 import com.dushan.dev.mapper.R;
 
 import java.util.List;
 
 public class MarkersAdapter extends RecyclerView.Adapter<MarkersAdapter.MarkersHolder> {
 
+    private ClickListener mListener;
     private List<Marker> mMarkerList;
     private Context context;
 
-    public MarkersAdapter(Context context, List<Marker> mMarkerList){
+    public MarkersAdapter(Context context, List<Marker> mMarkerList, ClickListener listener){
         this.context = context;
         this.mMarkerList = mMarkerList;
+        mListener = listener;
     }
-
 
     @NonNull
     @Override
     public MarkersAdapter.MarkersHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.marker_item, null);
-        MarkersHolder viewHolder = new MarkersHolder(view);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.view_card, null);
+        MarkersHolder viewHolder = new MarkersHolder(view, this.mListener);
         return viewHolder;
     }
 
@@ -39,20 +44,23 @@ public class MarkersAdapter extends RecyclerView.Adapter<MarkersAdapter.MarkersH
     public void onBindViewHolder(@NonNull MarkersAdapter.MarkersHolder markersHandler, int i) {
         Marker markerInstance = mMarkerList.get(i);
         String category = markerInstance.getCategory();
-        // ubaciti odgovarajuce boje
         switch (category){
             case ("travel"):
-                markersHandler.tagHolder.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+                markersHandler.markerCategory.setTextColor(context.getResources().getColor(R.color.markerTravel));
                 break;
             case ("nature"):
-                markersHandler.tagHolder.setBackgroundColor(context.getResources().getColor(R.color.mainTextColor));
+                markersHandler.markerCategory.setTextColor(context.getResources().getColor(R.color.markerNature));
                 break;
+            case ("avoid"):
+                markersHandler.markerCategory.setTextColor(context.getResources().getColor(R.color.markerAvoid));
+                break;
+            default:
+                markersHandler.markerCategory.setTextColor(context.getResources().getColor(R.color.marker));
         }
-        markersHandler.category_tag.setText(category);
         Glide.with(context).load(markerInstance.getImageURL()).into(markersHandler.markerImage);
-        markersHandler.markerDescription.setText(markerInstance.getDescription());
         markersHandler.markerName.setText(markerInstance.getName());
-
+        markersHandler.markerDescription.setText(markerInstance.getDescription());
+        markersHandler.markerCategory.setText(category);
     }
 
     @Override
@@ -63,18 +71,24 @@ public class MarkersAdapter extends RecyclerView.Adapter<MarkersAdapter.MarkersH
         return 0;
     }
 
-    public class MarkersHolder extends RecyclerView.ViewHolder {
+    public class MarkersHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private ClickListener mListener;
         // each data item is just a string in this case
-        public TextView category_tag, markerName, markerDescription;
+        public TextView markerCategory, markerName, markerDescription;
         public ImageView markerImage;
-        public LinearLayout tagHolder;
-        public MarkersHolder(View view) {
+        public MarkersHolder(View view, ClickListener listener) {
             super(view);
-            this.category_tag = view.findViewById(R.id.category_tag);
             this.markerName = view.findViewById(R.id.markerName);
-            this.markerDescription = view.findViewById(R.id.markerDescription);
             this.markerImage = view.findViewById(R.id.markerImage);
-            this.tagHolder = view.findViewById(R.id.tagHolder);
+            this.markerCategory = view.findViewById(R.id.markerCategory);
+            this.markerDescription = view.findViewById(R.id.markerDescription);
+            mListener = listener;
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            mListener.onClick(view, getAdapterPosition());
         }
     }
 
@@ -84,6 +98,5 @@ public class MarkersAdapter extends RecyclerView.Adapter<MarkersAdapter.MarkersH
 
     public void setmMarkerList(List<Marker> mMarkerList) {
         this.mMarkerList = mMarkerList;
-
     }
 }

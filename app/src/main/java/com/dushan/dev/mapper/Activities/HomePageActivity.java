@@ -1,4 +1,4 @@
-package com.dushan.dev.mapper;
+package com.dushan.dev.mapper.Activities;
 
 import android.content.Intent;
 import android.os.Build;
@@ -9,8 +9,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
-import com.dushan.dev.mapper.Activities.GetStartedActivity;
-import com.dushan.dev.mapper.Activities.LoginActivity;
+import com.dushan.dev.mapper.R;
 
 public class HomePageActivity extends AppCompatActivity {
 
@@ -28,13 +27,13 @@ public class HomePageActivity extends AppCompatActivity {
         connectViews();
     }
 
-    private void connectViews(){
+    private void connectViews() {
         homePageGetStartedBtn = findViewById(R.id.homePageGetStartedBtn);
         homePageSignInBtn = findViewById(R.id.homePageSignInBtn);
         setUpListeners();
     }
 
-    private void setUpListeners(){
+    private void setUpListeners() {
         homePageGetStartedBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

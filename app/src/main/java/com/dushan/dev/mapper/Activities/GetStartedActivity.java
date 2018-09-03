@@ -81,7 +81,7 @@ public class GetStartedActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         if (task.isSuccessful()) {
                             Log.d(TAG, "createUserWithEmail:success");
-                            Intent mainActivityIntent = new Intent(GetStartedActivity.this, MainActivity.class);
+                            Intent mainActivityIntent = new Intent(GetStartedActivity.this, HomeActivity.class);
                             startActivity(mainActivityIntent);
                         } else {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());

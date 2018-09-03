@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#035BFF</color>
-    <color name="colorAccent">#035BFF</color>
+    <color name="colorPrimary">#0277bd</color>
+    <color name="colorPrimaryDark">#222936</color>
+    <color name="colorAccent">#0091ea</color>
 
     <color name="homePageStatusBarColor">#151B26</color>
-    <color name="lightBlue">#2D82FF</color>
-    <color name="darkBlue">#222936</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray">#6b7073</color>
     <color name="mainTextColor">#000000</color>
     <color name="altTextColor">#FFFFFF</color>
     <color name="unselectedTabTextColor">#ABCDFF</color>
     <color name="tabHighlightColor">#18FFFF</color>
+    <color name="markerTravel">#212d6d</color>
+    <color name="markerNature">#1a6730</color>
+    <color name="markerAvoid">#73201e</color>
+    <color name="marker">#276680</color>
 </resources>

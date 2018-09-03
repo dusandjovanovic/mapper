@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".HomePageActivity">
+        <activity android:name=".Activities.HomePageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,14 +21,19 @@
         </activity>
         <activity android:name=".Activities.GetStartedActivity" />
         <activity android:name=".Activities.LoginActivity" />
-        <activity android:name=".Activities.MainActivity"></activity>
+        <activity
+            android:name=".Activities.HomeActivity"
+            android:label="@string/title_activity_home"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activities.MarkerActivity"
+            android:theme="@style/AppTheme"></activity>
 
         <service
-            android:name=".CloudDownloadService"
-            android:exported="false"/>
-
+            android:name=".Services.CloudDownloadService"
+            android:exported="false" />
         <service
-            android:name=".CloudUploadService"
+            android:name=".Services.CloudUploadService"
             android:exported="false" />
     </application>
 
