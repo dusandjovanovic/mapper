@@ -4,11 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -27,7 +24,6 @@ import com.dushan.dev.mapper.Interfaces.ClickListener;
 import com.dushan.dev.mapper.R;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,6 +45,7 @@ public class HomeActivity extends AppCompatActivity
     private FloatingActionButton addMarkerButton;
 
     private String userId;
+    private String email;
     private MarkerData markerData;
 
     @Override
@@ -58,19 +55,23 @@ public class HomeActivity extends AppCompatActivity
 
         sharedPref = getSharedPreferences("mapper", MODE_PRIVATE);
         userId = sharedPref.getString("userId", null);
+        email = sharedPref.getString("email", null);
         markerData = MarkerData.getInstance(userId);
 
         toolbar = (Toolbar) findViewById(R.id.homeToolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.homeDrawer);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.homeNavView);
         navigationView.setNavigationItemSelectedListener(this);
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUsername = (TextView) headerView.findViewById(R.id.navigationDrawerEmail);
+        navUsername.setText(email);
 
         selectedTab = RECENT_TAB;
         connectViews();
@@ -78,7 +79,7 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.homeDrawer);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -148,7 +149,7 @@ public class HomeActivity extends AppCompatActivity
                 return false;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.homeDrawer);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

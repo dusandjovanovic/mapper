@@ -21,7 +21,7 @@ import java.io.InputStream;
 
 public class CloudDownloadService extends BaseService {
 
-    private static final String TAG = "Storage#DownloadService";
+    private static final String TAG = "Storage#CloudDownloadService";
 
     /** Actions **/
     public static final String ACTION_DOWNLOAD = "action_download";

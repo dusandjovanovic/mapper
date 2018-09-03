@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dushan.dev.mapper">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -15,32 +16,21 @@
         <activity android:name=".Activities.HomePageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".Services.CloudDownloadService" android:exported="false" />
+        <service android:name=".Services.CloudUploadService" android:exported="false" />
+        <service android:name=".Services.LocationService" android:exported="false" />
+
         <activity android:name=".Activities.GetStartedActivity" />
         <activity android:name=".Activities.LoginActivity" />
-        <activity
-            android:name=".Activities.HomeActivity"
-            android:label="@string/title_activity_home"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".Activities.MarkerActivity"
-            android:theme="@style/AppTheme" />
-
-        <service
-            android:name=".Services.CloudDownloadService"
-            android:exported="false" />
-        <service
-            android:name=".Services.CloudUploadService"
-            android:exported="false" />
-
+        <activity android:name=".Activities.HomeActivity" android:label="@string/title_activity_home" android:theme="@style/AppTheme" />
+        <activity android:name=".Activities.MarkerActivity" android:theme="@style/AppTheme" />
         <activity android:name=".Activities.NewMarkerActivity" />
         <activity android:name=".Activities.NewMarkerDetailActivity" />
-        <activity
-            android:name=".Activities.SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+        <activity android:name=".Activities.SettingsActivity" />
     </application>
 
 </manifest>

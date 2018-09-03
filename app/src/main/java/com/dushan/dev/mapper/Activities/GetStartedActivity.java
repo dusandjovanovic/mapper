@@ -25,7 +25,7 @@ public class GetStartedActivity extends AppCompatActivity {
     private String TAG = "GET_STARTED_ACTIVITY";
     private FirebaseAuth mAuth;
     ImageView getStartedPreviewImage;
-    TextView getStartedNameTextView;
+    TextView getStartedAddPhoto;
     EditText getStartedNameEditText, getStartedLastNameEditText,
              getStartedPasswordEditText, getStartedEmailEditText,
              getStartedPhoneEditText;
@@ -42,8 +42,8 @@ public class GetStartedActivity extends AppCompatActivity {
     }
 
     private void connectViews() {
+        getStartedAddPhoto = findViewById(R.id.getStartedAddPhoto);
         getStartedPreviewImage = findViewById(R.id.getStartedPreviewImage);
-        getStartedNameTextView = findViewById(R.id.getStartedNameTextView);
         getStartedNameEditText = findViewById(R.id.getStartedNameEditText);
         getStartedLastNameEditText = findViewById(R.id.getStartedLastNameEditText);
         getStartedPasswordEditText = findViewById(R.id.getStartedPasswordEditText);
@@ -54,6 +54,13 @@ public class GetStartedActivity extends AppCompatActivity {
     }
 
     private void setUpListeners() {
+        getStartedAddPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
         getStartedNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

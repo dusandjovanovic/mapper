@@ -18,6 +18,7 @@
             android:src="@drawable/ic_camera_blend"
             android:tint="@color/altTextColor"
             android:layout_width="match_parent"
+            android:padding="20dp"
             android:layout_height="200dp" />
 
         <LinearLayout
@@ -33,7 +34,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:id="@+id/getStartedNameTextView"
+                android:id="@+id/getStartedAddPhoto"
                 android:layout_marginStart="4dp"
                 android:textSize="18sp"
                 android:layout_width="wrap_content"

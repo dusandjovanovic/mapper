@@ -23,7 +23,7 @@ import com.google.firebase.storage.UploadTask;
 
 public class CloudUploadService extends BaseService {
 
-    private static final String TAG = "MyUploadService";
+    private static final String TAG = "CloudUploadService";
 
     /** Intent Actions **/
     public static final String ACTION_UPLOAD = "action_upload";
