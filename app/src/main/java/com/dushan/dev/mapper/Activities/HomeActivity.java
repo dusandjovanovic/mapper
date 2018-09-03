@@ -140,7 +140,8 @@ public class HomeActivity extends AppCompatActivity
                 break;
             }
             case R.id.navigationSettings: {
-
+                Intent activityIntent = new Intent(HomeActivity.this, SettingsActivity.class);
+                startActivity(activityIntent);
                 break;
             }
             default:
@@ -229,7 +230,8 @@ public class HomeActivity extends AppCompatActivity
         addMarkerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent activityIntent = new Intent(HomeActivity.this, NewMarkerActivity.class);
+                startActivity(activityIntent);
             }
         });
     }

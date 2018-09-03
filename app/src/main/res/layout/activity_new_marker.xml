@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.NewMarkerActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:padding="16dp"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/newMarkerPhotoRadio"
+                android:onClick="onRadioButtonClicked"
+                android:checked="true"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:layout_width="match_parent"
+                android:text="@string/photo"
+                android:textAlignment="textStart"
+                android:layout_gravity="start"
+                android:layoutDirection="rtl"
+                android:layout_height="wrap_content" />
+
+            <RadioButton
+                android:id="@+id/newMarkerVideoRadio"
+                android:onClick="onRadioButtonClicked"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:layout_width="match_parent"
+                android:text="@string/video"
+                android:textAlignment="textStart"
+                android:layout_gravity="start"
+                android:layoutDirection="rtl"
+                android:layout_height="wrap_content" />
+
+            <RadioButton
+                android:id="@+id/newMarkerAudioRadio"
+                android:onClick="onRadioButtonClicked"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:layout_width="match_parent"
+                android:text="@string/audio"
+                android:textAlignment="textStart"
+                android:layout_gravity="start"
+                android:layoutDirection="rtl"
+                android:layout_height="wrap_content" />
+
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:padding="8dp"
+            android:text="@string/marker_about"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/newMarkerBrowseCaptureButton"
+            android:layout_width="match_parent"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_margin="24dp"
+            android:textAllCaps="true"
+            android:background="@drawable/button_bg_white"
+            android:text="@string/browse_or_capture"
+            android:textColor="@color/colorPrimary"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="16dp"
+        android:layout_alignParentBottom="true">
+
+        <CheckBox
+            android:padding="8dp"
+            android:id="@+id/newMarkerCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/confirmation_text"/>
+
+        <Button
+            android:id="@+id/newMarkerNextButton"
+            android:layout_width="match_parent"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_margin="24dp"
+            android:textAllCaps="true"
+            android:background="@drawable/button_bg_blue"
+            android:text="@string/next"
+            android:textColor="@color/altTextColor"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

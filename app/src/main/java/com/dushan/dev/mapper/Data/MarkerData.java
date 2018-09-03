@@ -1,8 +1,5 @@
 package com.dushan.dev.mapper.Data;
 
-import android.renderscript.Sampler;
-import android.support.annotation.IntegerRes;
-
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,16 +17,16 @@ public class MarkerData {
 
     public static MarkerData instance = null;
 
+    private static ListUpdatedEventListener updateListener;
+
     private MarkerData(String userID) {
         markers = new ArrayList<Marker>();
         myPlacesIndexMapping = new HashMap<String, Integer>();
-        database = FirebaseDatabase.getInstance().getReference();
-        FIREBASE_CHILD = "users/" + userID + "/markers";
-        database.child(FIREBASE_CHILD).addChildEventListener(childEventListener);
-        database.child(FIREBASE_CHILD).addListenerForSingleValueEvent(parentEventListener);
+        database = FirebaseDatabase.getInstance().getReference("users/" + userID);
+        database.child("markers").addChildEventListener(childEventListener);
+        database.child("markers").addListenerForSingleValueEvent(valueEventListener);
+        FIREBASE_CHILD = "markers";
     }
-
-    ListUpdatedEventListener updateListener;
 
     public void setEventListener(ListUpdatedEventListener listener) {
         updateListener = listener;
@@ -39,13 +36,12 @@ public class MarkerData {
         void onListUpdated();
     }
 
-    ValueEventListener parentEventListener = new ValueEventListener() {
+    ValueEventListener valueEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             if(updateListener != null) {
                 updateListener.onListUpdated();
             }
-
         }
 
         @Override

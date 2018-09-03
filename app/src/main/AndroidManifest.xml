@@ -27,7 +27,7 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Activities.MarkerActivity"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
 
         <service
             android:name=".Services.CloudDownloadService"
@@ -35,6 +35,12 @@
         <service
             android:name=".Services.CloudUploadService"
             android:exported="false" />
+
+        <activity android:name=".Activities.NewMarkerActivity" />
+        <activity android:name=".Activities.NewMarkerDetailActivity" />
+        <activity
+            android:name=".Activities.SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>

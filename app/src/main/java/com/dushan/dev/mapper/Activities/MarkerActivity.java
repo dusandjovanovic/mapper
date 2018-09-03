@@ -19,8 +19,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.dushan.dev.mapper.Data.Marker;
 import com.dushan.dev.mapper.R;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.util.Objects;
 
@@ -28,6 +26,7 @@ public class MarkerActivity extends AppCompatActivity {
 
     private TextView markerNameText, markerAuthorText, markerDescriptionText, markerAddress, markerCategoryText;
     private CollapsingToolbarLayout markerImage;
+    private ImageView markerToolbarImage;
     private FloatingActionButton markerAddFavoriteButton;
     private Button markerGetDirectionsButton;
 
@@ -43,7 +42,7 @@ public class MarkerActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         marker = new Marker(extras.getString("name"), extras.getString("address"), extras.getString("category"), extras.getString("author"), extras.getString("description"), extras.getString("imageURL"),
-                Double.parseDouble(extras.getString("latitude")), Double.parseDouble(extras.getString("longitude")));
+                extras.getDouble("latitude"), extras.getDouble("longitude"));
         connectViews();
         updateViews();
     }
@@ -57,6 +56,7 @@ public class MarkerActivity extends AppCompatActivity {
         markerAddFavoriteButton = findViewById(R.id.markerAddFavoriteButton);
         markerImage = findViewById(R.id.markerToolbar);
         markerGetDirectionsButton= findViewById(R.id.markerGetDirectionsButton);
+        markerToolbarImage = findViewById(R.id.markerToolbarImage);
         setupListeners();
     }
 
@@ -66,22 +66,7 @@ public class MarkerActivity extends AppCompatActivity {
         markerDescriptionText.setText(marker.getDescription());
         markerAddress.setText(marker.getAddress());
         markerCategoryText.setText(marker.getCategory());
-        Picasso.get().load(marker.getImageURL()).into(new Target(){
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                markerImage.setBackground(new BitmapDrawable(bitmap));
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                Log.d("TAG", "Image failed");
-            }
-
-            @Override
-            public void onPrepareLoad(final Drawable placeHolderDrawable) {
-                Log.d("TAG", "Prepare Load");
-            }
-        });
+        Glide.with(this).load(marker.getImageURL()).into(markerToolbarImage);
     }
 
     private void setupListeners(){
