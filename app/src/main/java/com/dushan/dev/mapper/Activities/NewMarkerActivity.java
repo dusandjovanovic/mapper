@@ -52,9 +52,7 @@ public class NewMarkerActivity extends AppCompatActivity {
                 if (checked)
 
                     break;
-            case R.id.newMarkerAudioRadio:
-                if (checked)
-
+            default:
                     break;
         }
     }

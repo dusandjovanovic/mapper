@@ -15,10 +15,8 @@
 
         <ImageView
             android:id="@+id/getStartedPreviewImage"
-            android:src="@drawable/ic_camera_blend"
-            android:tint="@color/altTextColor"
             android:layout_width="match_parent"
-            android:padding="20dp"
+            android:padding="25dp"
             android:layout_height="200dp" />
 
         <LinearLayout
@@ -68,22 +66,14 @@
     </LinearLayout>
 
     <EditText
-        android:id="@+id/getStartedEmailEditText"
-        android:maxLines="1"
+        android:id="@+id/getStartedAboutEditText"
+        android:minLines="3"
+        android:maxLines="3"
         android:layout_margin="8dp"
-        android:hint="@string/email"
+        android:hint="@string/about"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <EditText
-        android:id="@+id/getStartedPasswordEditText"
-        android:maxLines="1"
-        android:layout_margin="8dp"
-        android:inputType="textPassword"
-        android:hint="@string/password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"

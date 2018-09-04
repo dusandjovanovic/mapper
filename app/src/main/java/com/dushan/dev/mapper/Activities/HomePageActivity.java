@@ -37,8 +37,9 @@ public class HomePageActivity extends AppCompatActivity {
         homePageGetStartedBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent getStartedIntent = new Intent(HomePageActivity.this, GetStartedActivity.class);
-                startActivity(getStartedIntent);
+                Intent loginIntent = new Intent(HomePageActivity.this, LoginActivity.class);
+                loginIntent.putExtra("getStarted", true);
+                startActivity(loginIntent);
             }
         });
         homePageSignInBtn.setOnClickListener(new View.OnClickListener() {

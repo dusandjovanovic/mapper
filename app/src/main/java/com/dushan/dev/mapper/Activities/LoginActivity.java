@@ -30,6 +30,8 @@ public class LoginActivity extends AppCompatActivity {
     private CheckBox loginRememberMe;
     private SharedPreferences sharedPref;
 
+    private boolean getStarted;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,11 +40,15 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         connectViews();
 
+        Intent intent = getIntent();
+        getStarted = intent.getBooleanExtra("getStarted", false);
+
         sharedPref = getSharedPreferences("mapper", MODE_PRIVATE);
         String userId = sharedPref.getString("userId", "undefined");
         if (userId != "undefined") {
             String email = sharedPref.getString("email", "undefined");
             String password = sharedPref.getString("password", "undefined");
+
             signIn(email, password);
         }
     }
@@ -62,13 +68,16 @@ public class LoginActivity extends AppCompatActivity {
                 if(validateInputs()) {
                     String email = loginEmailEditText.getText().toString();
                     String password = loginPasswordEditText.getText().toString();
-                    signIn(email, password);
+                    if (getStarted)
+                        createAcount(email, password);
+                    else
+                        signIn(email, password);
                 }
             }
         });
     }
 
-    private void signIn(String email, String password) {
+    private void rememberMe(String email, String password) {
         progressDialog = new ProgressDialog(LoginActivity.this);
         progressDialog.setMessage("Authenticating...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -94,7 +103,10 @@ public class LoginActivity extends AppCompatActivity {
             };
             mAuth.addAuthStateListener(authListener);
         }
+    }
 
+    private void signIn(String email, String password) {
+        rememberMe(email, password);
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -106,6 +118,26 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(mainActivityIntent);
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void createAcount(String email, String password) {
+        rememberMe(email, password);
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        progressDialog.dismiss();
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "createUserWithEmail:success");
+                            Intent mainActivityIntent = new Intent(LoginActivity.this, GetStartedActivity.class);
+                            startActivity(mainActivityIntent);
+                        } else {
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }

@@ -21,7 +21,7 @@ import java.io.InputStream;
 
 public class CloudDownloadService extends BaseService {
 
-    private static final String TAG = "Storage#CloudDownloadService";
+    private static final String TAG = "CloudDownloadService";
 
     /** Actions **/
     public static final String ACTION_DOWNLOAD = "action_download";
@@ -94,12 +94,7 @@ public class CloudDownloadService extends BaseService {
                     @Override
                     public void onSuccess(StreamDownloadTask.TaskSnapshot taskSnapshot) {
                         Log.d(TAG, "download:SUCCESS");
-
-                        // Send success broadcast with number of bytes downloaded
                         broadcastDownloadFinished(downloadPath, taskSnapshot.getTotalByteCount());
-                        showDownloadFinishedNotification(downloadPath, (int) taskSnapshot.getTotalByteCount());
-
-                        // Mark task completed
                         taskCompleted();
                     }
                 })
@@ -107,12 +102,7 @@ public class CloudDownloadService extends BaseService {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
                         Log.w(TAG, "download:FAILURE", exception);
-
-                        // Send failure broadcast
                         broadcastDownloadFinished(downloadPath, -1);
-                        showDownloadFinishedNotification(downloadPath, -1);
-
-                        // Mark task completed
                         taskCompleted();
                     }
                 });
@@ -131,24 +121,6 @@ public class CloudDownloadService extends BaseService {
                 .putExtra(EXTRA_BYTES_DOWNLOADED, bytesDownloaded);
         return LocalBroadcastManager.getInstance(getApplicationContext())
                 .sendBroadcast(broadcast);
-    }
-
-    /**
-     * Show a notification for a finished download.
-     */
-    private void showDownloadFinishedNotification(String downloadPath, int bytesDownloaded) {
-        // Hide the progress notification
-        dismissProgressNotification();
-
-        // Make Intent to MainActivity
-        Intent intent = new Intent(this, HomeActivity.class)
-                .putExtra(EXTRA_DOWNLOAD_PATH, downloadPath)
-                .putExtra(EXTRA_BYTES_DOWNLOADED, bytesDownloaded)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-        boolean success = bytesDownloaded != -1;
-        String caption = success ? getString(R.string.download_success) : getString(R.string.download_failure);
-        showFinishedNotification(caption, intent, true);
     }
 
 

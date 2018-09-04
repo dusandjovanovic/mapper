@@ -23,6 +23,7 @@
     <string name="add_photo">Add a profile photo</string>
     <string name="name">Name</string>
     <string name="email">Email</string>
+    <string name="about">Something about yourself</string>
     <string name="last_name">Last name</string>
     <string name="phone_number">Phone number</string>
 
@@ -58,6 +59,7 @@
     <string name="download_success">Background service: success</string>
     <string name="download_failure">Background service: failure</string>
     <string name="background_service">Use background service</string>
+    <string name="success">Background service finished</string>
 
     <!--New Marker Activity-->
     <string name="photo">Photo</string>
