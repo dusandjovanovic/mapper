@@ -43,7 +43,7 @@ public class GetStartedActivity extends AppCompatActivity {
 
     private BroadcastReceiver mBroadcastReceiver;
     private FirebaseAuth mAuth;
-    private FirebaseStorage storage;
+    private FirebaseStorage mStorage;
 
     private UserData userData;
     private Uri mDownloadUrl = null;
@@ -62,7 +62,7 @@ public class GetStartedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_get_started);
 
         mAuth = FirebaseAuth.getInstance();
-        storage = FirebaseStorage.getInstance();
+        mStorage = FirebaseStorage.getInstance();
         userData = UserData.getInstance(mAuth.getCurrentUser().getUid());
         email = mAuth.getCurrentUser().getEmail();
 
@@ -138,7 +138,7 @@ public class GetStartedActivity extends AppCompatActivity {
         Log.d(TAG, "onUploadBackgroundServiceIntent: " + intent.getParcelableExtra(CloudUploadService.EXTRA_DOWNLOAD_URL));
         mFileUri = intent.getParcelableExtra(CloudUploadService.EXTRA_FILE_URI);
         mDownloadUrl = intent.getParcelableExtra(CloudUploadService.EXTRA_DOWNLOAD_URL);
-        StorageReference storageReference = storage.getReferenceFromUrl(mDownloadUrl.toString());
+        StorageReference storageReference = mStorage.getReferenceFromUrl(mDownloadUrl.toString());
         GlideApp.with(GetStartedActivity.this)
                 .load(storageReference)
                 .into(getStartedPreviewImage);

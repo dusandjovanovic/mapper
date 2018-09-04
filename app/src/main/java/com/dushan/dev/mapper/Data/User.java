@@ -16,35 +16,17 @@ public class User {
     private String email;
     private String image;
 
-    private ArrayList<String> friends;
-    private ArrayList<String> requests;
-
-    @Exclude
-    public String key;
+    private int reach;
 
     public User() {}
 
-    public User(String email, String name, String lastName, String about, String phoneNumber, Uri image
-            , ArrayList<String> friends, ArrayList<String> requests) {
+    public User(String email, String name, String lastName, String about, String phoneNumber, Uri image, int reach) {
         this.email = email;
         this.name = name;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.about = about;
         this.image = image.toString();
-        this.friends = friends;
-        this.requests = requests;
-    }
-
-    public User(String email, String name, String lastName, String about, String phoneNumber, Uri image) {
-        this.email = email;
-        this.name = name;
-        this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
-        this.about = about;
-        this.image = image.toString();
-        this.friends = new ArrayList<String>();
-        this.requests = new ArrayList<String>();
     }
 
     public String getName() {
@@ -87,31 +69,12 @@ public class User {
         this.image = image;
     }
 
-    public ArrayList<String> getFriends() {
-        return friends;
-    }
 
-    public void setFriends(ArrayList<String> friends) {
-        this.friends = friends;
-    }
+    public String getEmail() { return email; }
 
-    public ArrayList<String> getRequests() {
-        return requests;
-    }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setRequests(ArrayList<String> requests) {
-        this.requests = requests;
-    }
+    public int getReach() { return reach; }
 
-    public void addFriend(String friend) {
-        this.friends.add(friend);
-    }
-
-    public void addRequest(String request) {
-        this.requests.add(request);
-    }
-
-    public void removeRequest(String request) {
-        this.requests.remove(request);
-    }
+    public void setReach(int reach) { this.reach = reach; }
 }

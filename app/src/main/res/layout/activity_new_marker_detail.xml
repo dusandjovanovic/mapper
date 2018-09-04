@@ -13,10 +13,10 @@
 
 
     <ImageView
+        android:id="@+id/newMarkerDetailImage"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:src="@drawable/ic_search"
-        android:tint="@color/colorAccent"/>
+        android:scaleType="centerCrop"
+        android:layout_height="250dp" />
 
     <EditText
         android:id="@+id/newMarkerDetailNameText"
@@ -38,6 +38,8 @@
         android:layout_width="match_parent"
         android:inputType="textMultiLine"
         android:layout_height="wrap_content"
+        android:minLines="2"
+        android:maxLines="2"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:hint="@string/describe_this_place"/>

@@ -20,6 +20,8 @@ import android.widget.TextView;
 import com.dushan.dev.mapper.Adapters.MarkersAdapter;
 import com.dushan.dev.mapper.Data.Marker;
 import com.dushan.dev.mapper.Data.MarkerData;
+import com.dushan.dev.mapper.Data.User;
+import com.dushan.dev.mapper.Data.UserData;
 import com.dushan.dev.mapper.Interfaces.ClickListener;
 import com.dushan.dev.mapper.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,17 +48,23 @@ public class HomeActivity extends AppCompatActivity
 
     private String userId;
     private String email;
+
     private MarkerData markerData;
+    private UserData userData;
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        sharedPref = getSharedPreferences("mapper", MODE_PRIVATE);
-        userId = sharedPref.getString("userId", null);
-        email = sharedPref.getString("email", null);
+        mAuth = FirebaseAuth.getInstance();
+        userId = mAuth.getCurrentUser().getUid();
+        email = mAuth.getCurrentUser().getEmail();
         markerData = MarkerData.getInstance(userId);
+        userData = UserData.getInstance(userId);
+        sharedPref = getSharedPreferences("mapper", MODE_PRIVATE);
 
         toolbar = (Toolbar) findViewById(R.id.homeToolbar);
         setSupportActionBar(toolbar);
@@ -66,12 +74,6 @@ public class HomeActivity extends AppCompatActivity
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.homeNavView);
-        navigationView.setNavigationItemSelectedListener(this);
-        View headerView = navigationView.getHeaderView(0);
-        TextView navUsername = (TextView) headerView.findViewById(R.id.navigationDrawerEmail);
-        navUsername.setText(email);
 
         selectedTab = RECENT_TAB;
         connectViews();
@@ -102,13 +104,14 @@ public class HomeActivity extends AppCompatActivity
             editor.clear();
             editor.commit();
 
-            FirebaseAuth auth = FirebaseAuth.getInstance();
-            auth.signOut();
+            mAuth.signOut();
             Intent homeActivityIntent = new Intent(HomeActivity.this, HomePageActivity.class);
             startActivity(homeActivityIntent);
             return true;
         }
         else if (id == R.id.homeMenuSearch) {
+            Intent activityIntent = new Intent(HomeActivity.this, MapsActivity.class);
+            startActivity(activityIntent);
             return true;
         }
 
@@ -163,6 +166,11 @@ public class HomeActivity extends AppCompatActivity
         viewHighlight = findViewById(R.id.viewHighlight);
         mainRecycler = findViewById(R.id.mainRecycler);
         addMarkerButton = findViewById(R.id.homeAddMarkerButton);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.homeNavView);
+        navigationView.setNavigationItemSelectedListener(this);
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUsername = (TextView) headerView.findViewById(R.id.navigationDrawerEmail);
+        navUsername.setText(email);
         initiateActivity();
     }
 

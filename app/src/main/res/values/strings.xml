@@ -80,4 +80,5 @@
         <item>Avoid</item>
     </string-array>
     <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

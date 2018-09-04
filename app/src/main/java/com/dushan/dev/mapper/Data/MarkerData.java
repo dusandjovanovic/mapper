@@ -12,7 +12,7 @@ import java.util.HashMap;
 public class MarkerData {
     private static ArrayList<Marker> markers;
     private static HashMap<String, Integer> myPlacesIndexMapping;
-    private static String FIREBASE_CHILD;
+    private static String FIREBASE_CHILD = "markers";
     private static DatabaseReference database;
 
     public static MarkerData instance = null;
@@ -23,9 +23,8 @@ public class MarkerData {
         markers = new ArrayList<Marker>();
         myPlacesIndexMapping = new HashMap<String, Integer>();
         database = FirebaseDatabase.getInstance().getReference("users/" + userID);
-        database.child("markers").addChildEventListener(childEventListener);
-        database.child("markers").addListenerForSingleValueEvent(valueEventListener);
-        FIREBASE_CHILD = "markers";
+        database.child(FIREBASE_CHILD).addChildEventListener(childEventListener);
+        database.child(FIREBASE_CHILD).addListenerForSingleValueEvent(valueEventListener);
     }
 
     public void setEventListener(ListUpdatedEventListener listener) {

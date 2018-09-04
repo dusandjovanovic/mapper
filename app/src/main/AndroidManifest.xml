@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
@@ -22,17 +23,36 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".Services.CloudDownloadService" android:exported="false" />
-        <service android:name=".Services.CloudUploadService" android:exported="false" />
-        <service android:name=".Services.LocationService" android:exported="false" />
+        <service
+            android:name=".Services.CloudDownloadService"
+            android:exported="false" />
+        <service
+            android:name=".Services.CloudUploadService"
+            android:exported="false" />
+        <service
+            android:name=".Services.LocationService"
+            android:exported="false" />
 
         <activity android:name=".Activities.GetStartedActivity" />
         <activity android:name=".Activities.LoginActivity" />
-        <activity android:name=".Activities.HomeActivity" android:label="@string/title_activity_home" android:theme="@style/AppTheme" />
-        <activity android:name=".Activities.MarkerActivity" android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activities.HomeActivity"
+            android:label="@string/title_activity_home"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activities.MarkerActivity"
+            android:theme="@style/AppTheme" />
         <activity android:name=".Activities.NewMarkerActivity" />
         <activity android:name=".Activities.NewMarkerDetailActivity" />
         <activity android:name=".Activities.SettingsActivity" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".Activities.MapsActivity"
+            android:label="@string/title_activity_maps"></activity>
     </application>
 
 </manifest>
