@@ -73,7 +73,8 @@ public class SettingsActivity extends AppCompatActivity
                 break;
             }
             case R.id.navigationDiscover: {
-
+                Intent activityIntent = new Intent(SettingsActivity.this, DiscoverActivity.class);
+                startActivity(activityIntent);
                 break;
             }
             case R.id.navigationFriends: {
@@ -82,19 +83,17 @@ public class SettingsActivity extends AppCompatActivity
                 break;
             }
             case R.id.navigationSearch: {
-
+                Intent activityIntent = new Intent(SettingsActivity.this, SearchActivity.class);
+                startActivity(activityIntent);
                 break;
             }
             case R.id.navigationStatistics: {
-
-                break;
-            }
-            case R.id.navigationSettings: {
-
+                Intent activityIntent = new Intent(SettingsActivity.this, StatisticsActivity.class);
+                startActivity(activityIntent);
                 break;
             }
             default:
-                return false;
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.settingsDrawer);

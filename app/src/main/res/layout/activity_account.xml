@@ -33,7 +33,6 @@
                     android:padding="8dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginBottom="24dp"                    >
-
                     <TextView
                         android:id="@+id/accountName"
                         android:layout_width="wrap_content"

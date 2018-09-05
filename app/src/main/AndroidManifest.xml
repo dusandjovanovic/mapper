@@ -15,7 +15,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -53,7 +52,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAJieb8osUBJCKhwwRRsTYk-6wt6L97p6w" />
+            android:value="@string/google_maps_key" />
 
         <activity
             android:name=".Activities.MapsActivity"
@@ -71,6 +70,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dushan.dev.mapper.Activities.FriendsActivity" />
         </activity>
+        <activity android:name=".Activities.DiscoverActivity" />
+        <activity android:name=".Activities.SearchActivity" />
+        <activity android:name=".Activities.StatisticsActivity" />
+        <activity android:name=".Activities.FriendsAddActivity"></activity>
     </application>
 
 </manifest>

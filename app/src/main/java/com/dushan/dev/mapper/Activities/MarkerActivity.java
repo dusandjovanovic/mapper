@@ -18,7 +18,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.dushan.dev.mapper.Data.Marker;
+import com.dushan.dev.mapper.Data.MarkerData;
+import com.dushan.dev.mapper.Data.SavedMarkerData;
+import com.dushan.dev.mapper.Data.UserData;
 import com.dushan.dev.mapper.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
@@ -30,6 +34,11 @@ public class MarkerActivity extends AppCompatActivity {
     private Button markerGetDirectionsButton;
 
     Marker marker;
+    SavedMarkerData savedData;
+
+    private String userId;
+    private FirebaseAuth mAuth;
+    Bundle extras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +48,11 @@ public class MarkerActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
-        Bundle extras = getIntent().getExtras();
+        mAuth = FirebaseAuth.getInstance();
+        userId = mAuth.getCurrentUser().getUid();
+        savedData = SavedMarkerData.getInstance(userId);
+
+        extras = getIntent().getExtras();
         marker = new Marker(extras.getString("name"), extras.getString("address"), extras.getString("category"), extras.getString("author"), extras.getString("description"), extras.getString("imageURL"),
                 extras.getDouble("latitude"), extras.getDouble("longitude"));
         connectViews();
@@ -71,8 +84,7 @@ public class MarkerActivity extends AppCompatActivity {
         markerAddFavoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                savedData.addNewMarker(marker);
             }
         });
 

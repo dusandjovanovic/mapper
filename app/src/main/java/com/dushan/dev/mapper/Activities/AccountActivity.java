@@ -15,9 +15,10 @@ import java.util.Objects;
 
 public class AccountActivity extends AppCompatActivity {
 
-    private TextView accountName, accountLastName;
-
-    private String name, lastName;
+    private TextView accountName, accountLastName, accountPhone, accountEmail, accountLocation, accountReach, accountAbout;
+    private String name, lastName, phone, email, about;
+    private double latitude, longitude;
+    private int reach;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +31,14 @@ public class AccountActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         name = extras.getString("name");
         lastName = extras.getString("lastName");
+        phone = extras.getString("phone");
+        email = extras.getString("email");
+        latitude = extras.getDouble("latitude", 0);
+        longitude = extras.getDouble("longitude", 0);
+        about = extras.getString("about");
+        reach = extras.getInt("reach", 0);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         connectViews();
         initiateActivity();
     }
@@ -40,10 +46,29 @@ public class AccountActivity extends AppCompatActivity {
     private void connectViews() {
         accountName = findViewById(R.id.accountName);
         accountLastName = findViewById(R.id.accountLastName);
+        accountPhone = findViewById(R.id.accountPhone);
+        accountEmail = findViewById(R.id.accountEmail);
+        accountLocation = findViewById(R.id.accountLocation);
+        accountReach = findViewById(R.id.accountReach);
+        accountAbout = findViewById(R.id.accountAbout);
     }
 
     private void initiateActivity() {
         accountName.setText(name);
         accountLastName.setText(lastName);
+        accountPhone.setText(phone);
+        accountEmail.setText(email);
+        accountLocation.setText(String.valueOf(longitude) + " " + String.valueOf(latitude));
+        accountReach.setText(String.valueOf(reach));
+        accountAbout.setText(about);
+        accountLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent activityIntent = new Intent(AccountActivity.this, MapsActivity.class);
+                activityIntent.putExtra("latitude", latitude);
+                activityIntent.putExtra("longitude", longitude);
+                startActivity(activityIntent);
+            }
+        });
     }
 }

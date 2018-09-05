@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.dushan.dev.mapper.Adapters.MarkersAdapter;
 import com.dushan.dev.mapper.Data.Marker;
 import com.dushan.dev.mapper.Data.MarkerData;
+import com.dushan.dev.mapper.Data.SavedMarkerData;
 import com.dushan.dev.mapper.Data.User;
 import com.dushan.dev.mapper.Data.UserData;
 import com.dushan.dev.mapper.Interfaces.ClickListener;
@@ -34,13 +35,12 @@ public class HomeActivity extends AppCompatActivity
 
     private final int RECENT_TAB = 1;
     private final int SAVED_TAB = 2;
-    private final int VIEW_TAB = 3;
 
     private SharedPreferences sharedPref;
 
     private Toolbar toolbar;
-    private TextView recentTab, savedTab, viewTab;
-    private View recentHighlight, savedHighlight, viewHighlight;
+    private TextView recentTab, savedTab;
+    private View recentHighlight, savedHighlight;
     private RecyclerView mainRecycler;
     private int selectedTab;
     private MarkersAdapter markersAdapter;
@@ -50,6 +50,7 @@ public class HomeActivity extends AppCompatActivity
     private String email;
 
     private MarkerData markerData;
+    private SavedMarkerData savedData;
     private UserData userData;
 
     private FirebaseAuth mAuth;
@@ -62,7 +63,9 @@ public class HomeActivity extends AppCompatActivity
         mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getCurrentUser().getUid();
         email = mAuth.getCurrentUser().getEmail();
+
         markerData = MarkerData.getInstance(userId);
+        savedData = SavedMarkerData.getInstance(userId);
         userData = UserData.getInstance(userId);
         sharedPref = getSharedPreferences("mapper", MODE_PRIVATE);
 
@@ -123,12 +126,9 @@ public class HomeActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.navigationHome: {
-
-                break;
-            }
             case R.id.navigationDiscover: {
-
+                Intent activityIntent = new Intent(HomeActivity.this, DiscoverActivity.class);
+                startActivity(activityIntent);
                 break;
             }
             case R.id.navigationFriends: {
@@ -137,11 +137,13 @@ public class HomeActivity extends AppCompatActivity
                 break;
             }
             case R.id.navigationSearch: {
-
+                Intent activityIntent = new Intent(HomeActivity.this, SearchActivity.class);
+                startActivity(activityIntent);
                 break;
             }
             case R.id.navigationStatistics: {
-
+                Intent activityIntent = new Intent(HomeActivity.this, StatisticsActivity.class);
+                startActivity(activityIntent);
                 break;
             }
             case R.id.navigationSettings: {
@@ -150,7 +152,7 @@ public class HomeActivity extends AppCompatActivity
                 break;
             }
             default:
-                return false;
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.homeDrawer);
@@ -161,10 +163,8 @@ public class HomeActivity extends AppCompatActivity
     private void connectViews() {
         recentTab = findViewById(R.id.recentTab);
         savedTab = findViewById(R.id.savedTab);
-        viewTab = findViewById(R.id.viewTab);
         recentHighlight = findViewById(R.id.recentHighlight);
         savedHighlight = findViewById(R.id.savedHighlight);
-        viewHighlight = findViewById(R.id.viewHighlight);
         mainRecycler = findViewById(R.id.mainRecycler);
         addMarkerButton = findViewById(R.id.homeAddMarkerButton);
         NavigationView navigationView = (NavigationView) findViewById(R.id.homeNavView);
@@ -184,14 +184,27 @@ public class HomeActivity extends AppCompatActivity
         if (markersAdapter == null) {
             ClickListener listener = (view, position) -> {
                 Intent markerActivity = new Intent(HomeActivity.this, MarkerActivity.class);
-                markerActivity.putExtra("name", markerData.getMarkers().get(position).getName());
-                markerActivity.putExtra("author", markerData.getMarkers().get(position).getAuthor());
-                markerActivity.putExtra("address", markerData.getMarkers().get(position).getAddress());
-                markerActivity.putExtra("description", markerData.getMarkers().get(position).getDescription());
-                markerActivity.putExtra("category", markerData.getMarkers().get(position).getCategory());
-                markerActivity.putExtra("imageURL", markerData.getMarkers().get(position).getImageURL());
-                markerActivity.putExtra("latitude", markerData.getMarkers().get(position).getLatitude());
-                markerActivity.putExtra("longitude", markerData.getMarkers().get(position).getLongitude());
+                if (selectedTab == RECENT_TAB) {
+                    markerActivity.putExtra("name", markerData.getMarkers().get(position).getName());
+                    markerActivity.putExtra("author", markerData.getMarkers().get(position).getAuthor());
+                    markerActivity.putExtra("address", markerData.getMarkers().get(position).getAddress());
+                    markerActivity.putExtra("description", markerData.getMarkers().get(position).getDescription());
+                    markerActivity.putExtra("category", markerData.getMarkers().get(position).getCategory());
+                    markerActivity.putExtra("imageURL", markerData.getMarkers().get(position).getImageURL());
+                    markerActivity.putExtra("latitude", markerData.getMarkers().get(position).getLatitude());
+                    markerActivity.putExtra("longitude", markerData.getMarkers().get(position).getLongitude());
+                }
+                else {
+                    markerActivity.putExtra("name", savedData.getMarkers().get(position).getName());
+                    markerActivity.putExtra("author", savedData.getMarkers().get(position).getAuthor());
+                    markerActivity.putExtra("address", savedData.getMarkers().get(position).getAddress());
+                    markerActivity.putExtra("description", savedData.getMarkers().get(position).getDescription());
+                    markerActivity.putExtra("category", savedData.getMarkers().get(position).getCategory());
+                    markerActivity.putExtra("imageURL", savedData.getMarkers().get(position).getImageURL());
+                    markerActivity.putExtra("latitude", savedData.getMarkers().get(position).getLatitude());
+                    markerActivity.putExtra("longitude", savedData.getMarkers().get(position).getLongitude());
+                }
+
                 startActivity(markerActivity);
             };
             markersAdapter = new MarkersAdapter(getApplicationContext(), markerList, listener);
@@ -207,7 +220,16 @@ public class HomeActivity extends AppCompatActivity
         markerData.setEventListener(new MarkerData.ListUpdatedEventListener() {
             @Override
             public void onListUpdated() {
-                initiateRecyclerView(markerData.getMarkers());
+                if (selectedTab == RECENT_TAB)
+                    initiateRecyclerView(markerData.getMarkers());
+            }
+        });
+
+        savedData.setEventListener(new SavedMarkerData.ListUpdatedEventListener() {
+            @Override
+            public void onListUpdated() {
+                if (selectedTab == SAVED_TAB)
+                    initiateRecyclerView(savedData.getMarkers());
             }
         });
 
@@ -224,15 +246,7 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 selectedTab = SAVED_TAB;
-                initiateRecyclerView(markerData.getMarkers());
-                repaintTabs();
-            }
-        });
-
-        viewTab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectedTab = VIEW_TAB;
+                initiateRecyclerView(savedData.getMarkers());
                 repaintTabs();
             }
         });
@@ -249,10 +263,8 @@ public class HomeActivity extends AppCompatActivity
     private void repaintTabs(){
         recentTab.setTextColor(getApplicationContext().getResources().getColor(R.color.unselectedTabTextColor));
         savedTab.setTextColor(getApplicationContext().getResources().getColor(R.color.unselectedTabTextColor));
-        viewTab.setTextColor(getApplicationContext().getResources().getColor(R.color.unselectedTabTextColor));
         recentHighlight.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimary));
         savedHighlight.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimary));
-        viewHighlight.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimary));
         switch (selectedTab) {
             case (RECENT_TAB):
                 recentTab.setTextColor(getApplicationContext().getResources().getColor(R.color.altTextColor));
@@ -261,10 +273,6 @@ public class HomeActivity extends AppCompatActivity
             case (SAVED_TAB):
                 savedTab.setTextColor(getApplicationContext().getResources().getColor(R.color.altTextColor));
                 savedHighlight.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.tabHighlightColor));
-                break;
-            case (VIEW_TAB):
-                viewTab.setTextColor(getApplicationContext().getResources().getColor(R.color.altTextColor));
-                viewHighlight.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.tabHighlightColor));
                 break;
             default:
                 break;

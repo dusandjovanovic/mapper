@@ -16,17 +16,22 @@ public class User {
     private String email;
     private String image;
 
+    private double latitude;
+    private double longitude;
+
     private int reach;
 
     public User() {}
 
-    public User(String email, String name, String lastName, String about, String phoneNumber, Uri image, int reach) {
+    public User(String email, String name, String lastName, String about, String phoneNumber, Uri image, int reach, double latitude, double longitude) {
         this.email = email;
         this.name = name;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.about = about;
         this.image = image.toString();
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public String getName() {
@@ -77,4 +82,14 @@ public class User {
     public int getReach() { return reach; }
 
     public void setReach(int reach) { this.reach = reach; }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) { this.latitude = latitude; }
+
+    public double getLongitude() { return longitude; }
+
+    public void setLongitude(double longitude) { this.longitude = longitude; }
 }

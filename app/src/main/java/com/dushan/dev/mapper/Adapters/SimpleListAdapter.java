@@ -6,9 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.dushan.dev.mapper.Data.User;
+import com.dushan.dev.mapper.Interfaces.GlideApp;
 import com.dushan.dev.mapper.R;
 
 import java.util.ArrayList;
@@ -29,7 +32,6 @@ public class SimpleListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void updateList(ArrayList<User> modelList) {
         this.modelList = modelList;
         notifyDataSetChanged();
-
     }
 
     @Override
@@ -50,8 +52,7 @@ public class SimpleListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             genericViewHolder.itemTxtTitle.setText(model.getName());
             genericViewHolder.itemTxtMessage.setText(model.getPhoneNumber());
-
-
+            Glide.with(mContext).load(model.getImage()).into(genericViewHolder.imgUser);
         }
     }
 
@@ -76,7 +77,6 @@ public class SimpleListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-
         private ImageView imgUser;
         private TextView itemTxtTitle;
         private TextView itemTxtMessage;

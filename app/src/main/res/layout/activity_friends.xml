@@ -18,9 +18,10 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:theme="@style/NavigationView"
         android:background="@color/colorPrimary"
         app:itemTextColor="@color/altTextColor"
-        app:itemIconTint="@color/altTextColor"
+        app:itemIconTint="@color/colorSecondary"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_home"
         app:menu="@menu/activity_home_drawer" />

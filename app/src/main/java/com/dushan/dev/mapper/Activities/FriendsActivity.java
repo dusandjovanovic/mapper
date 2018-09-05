@@ -90,9 +90,14 @@ public class FriendsActivity extends AppCompatActivity
 
         if (id == R.id.friendsMenuAccount) {
             Intent activityIntent = new Intent(FriendsActivity.this, AccountActivity.class);
-            String name = userData.getUser().getName();
             activityIntent.putExtra("name", userData.getUser().getName());
             activityIntent.putExtra("lastName", userData.getUser().getLastName());
+            activityIntent.putExtra("phone", userData.getUser().getPhoneNumber());
+            activityIntent.putExtra("email", userData.getUser().getEmail());
+            activityIntent.putExtra("latitude", userData.getUser().getLatitude());
+            activityIntent.putExtra("longitude", userData.getUser().getLongitude());
+            activityIntent.putExtra("about", userData.getUser().getAbout());
+            activityIntent.putExtra("reach", userData.getUser().getReach());
             startActivity(activityIntent);
             return true;
         }
@@ -120,19 +125,18 @@ public class FriendsActivity extends AppCompatActivity
                 break;
             }
             case R.id.navigationDiscover: {
-
-                break;
-            }
-            case R.id.navigationFriends: {
-
+                Intent activityIntent = new Intent(FriendsActivity.this, DiscoverActivity.class);
+                startActivity(activityIntent);
                 break;
             }
             case R.id.navigationSearch: {
-
+                Intent activityIntent = new Intent(FriendsActivity.this, SearchActivity.class);
+                startActivity(activityIntent);
                 break;
             }
             case R.id.navigationStatistics: {
-
+                Intent activityIntent = new Intent(FriendsActivity.this, StatisticsActivity.class);
+                startActivity(activityIntent);
                 break;
             }
             case R.id.navigationSettings: {
@@ -141,7 +145,7 @@ public class FriendsActivity extends AppCompatActivity
                 break;
             }
             default:
-                return false;
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.friendsDrawer);
@@ -187,14 +191,10 @@ public class FriendsActivity extends AppCompatActivity
     }
 
     private void setAdapter() {
-        modelList.add(new User("Dushan", "Qwerty", "Qwerty", "Qwerty", "Qwerty", Uri.fromFile(new File("/sdcard/sample.jpg")), 0));
-
+        modelList.add(userData.getUser());
 
         mAdapter = new SimpleListAdapter(FriendsActivity.this, modelList);
-
         recyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation());
@@ -206,11 +206,16 @@ public class FriendsActivity extends AppCompatActivity
         mAdapter.SetOnItemClickListener(new SimpleListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position, User model) {
-
-                //handle item click events here
-                Toast.makeText(FriendsActivity.this, "Hey " + model.getName(), Toast.LENGTH_SHORT).show();
-
-
+                Intent activityIntent = new Intent(FriendsActivity.this, AccountActivity.class);
+                activityIntent.putExtra("name", modelList.get(position).getName());
+                activityIntent.putExtra("lastName", modelList.get(position).getLastName());
+                activityIntent.putExtra("phone", modelList.get(position).getPhoneNumber());
+                activityIntent.putExtra("email", modelList.get(position).getEmail());
+                activityIntent.putExtra("latitude", modelList.get(position).getLatitude());
+                activityIntent.putExtra("longitude", modelList.get(position).getLongitude());
+                activityIntent.putExtra("about", modelList.get(position).getAbout());
+                activityIntent.putExtra("reach", modelList.get(position).getReach());
+                startActivity(activityIntent);
             }
         });
     }

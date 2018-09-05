@@ -59,7 +59,7 @@ public class UserData {
     }
 
     public void registerUser(String email, String name, String lastName, String about, String phoneNumber, Uri image) {
-        user = new User(email, name, lastName, about, phoneNumber, image, 0);
+        user = new User(email, name, lastName, about, phoneNumber, image, 0, 52.5200, 13.4050);
         database.child(FIREBASE_CHILD).setValue(user);
     }
 }

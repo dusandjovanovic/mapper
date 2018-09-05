@@ -118,21 +118,23 @@ public class SavedMarkerData {
     }
 
     public void addNewMarker(Marker place) {
-        String key = database.push().getKey();
-        markers.add(place);
-        myPlacesIndexMapping.put(key, markers.size() - 1);
-        database.child(FIREBASE_CHILD).child(key).setValue(place);
-        place.key = key;
+        if (!containsMarker(place.getName(), place.getAuthor(), place.getAddress())) {
+            String key = database.push().getKey();
+            markers.add(place);
+            myPlacesIndexMapping.put(key, markers.size() - 1);
+            database.child(FIREBASE_CHILD).child(key).setValue(place);
+            place.key = key;
+        }
     }
 
-    public Marker getPlace(int index) {
-        return markers.get(index);
-    }
-
-    public void deletePlace(int index) {
-        database.child(FIREBASE_CHILD).child(markers.get(index).key).removeValue();
-        Marker place = markers.remove(index);
-        recreateIndexMapping();
+    private boolean containsMarker(String name, String author, String address) {
+        boolean contains = false;
+        for (Marker marker : markers)
+            if (marker.getAuthor() == author && marker.getName() == name && marker.getAddress() == address) {
+                contains = true;
+                break;
+            }
+        return contains;
     }
 
     private void recreateIndexMapping() {
