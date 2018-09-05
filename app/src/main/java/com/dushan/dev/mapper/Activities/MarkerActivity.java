@@ -25,7 +25,6 @@ import java.util.Objects;
 public class MarkerActivity extends AppCompatActivity {
 
     private TextView markerNameText, markerAuthorText, markerDescriptionText, markerAddress, markerCategoryText;
-    private CollapsingToolbarLayout markerImage;
     private ImageView markerToolbarImage;
     private FloatingActionButton markerAddFavoriteButton;
     private Button markerGetDirectionsButton;
@@ -36,7 +35,7 @@ public class MarkerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_marker);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.markerToolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
@@ -54,7 +53,6 @@ public class MarkerActivity extends AppCompatActivity {
         markerAddress = findViewById(R.id.markerAddressText);
         markerCategoryText = findViewById(R.id.markerCategoryText);
         markerAddFavoriteButton = findViewById(R.id.markerAddFavoriteButton);
-        markerImage = findViewById(R.id.markerToolbar);
         markerGetDirectionsButton= findViewById(R.id.markerGetDirectionsButton);
         markerToolbarImage = findViewById(R.id.markerToolbarImage);
         setupListeners();

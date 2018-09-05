@@ -52,7 +52,20 @@
 
         <activity
             android:name=".Activities.MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
+        <activity
+            android:name=".Activities.FriendsActivity"
+            android:label="@string/title_activity_friends"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activities.AccountActivity"
+            android:label="@string/title_activity_account"
+            android:parentActivityName=".Activities.FriendsActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dushan.dev.mapper.Activities.FriendsActivity" />
+        </activity>
     </application>
 
 </manifest>

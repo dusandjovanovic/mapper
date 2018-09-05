@@ -132,7 +132,8 @@ public class HomeActivity extends AppCompatActivity
                 break;
             }
             case R.id.navigationFriends: {
-
+                Intent activityIntent = new Intent(HomeActivity.this, FriendsActivity.class);
+                startActivity(activityIntent);
                 break;
             }
             case R.id.navigationSearch: {

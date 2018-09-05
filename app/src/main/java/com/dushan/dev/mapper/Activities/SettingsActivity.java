@@ -77,7 +77,8 @@ public class SettingsActivity extends AppCompatActivity
                 break;
             }
             case R.id.navigationFriends: {
-
+                Intent activityIntent = new Intent(SettingsActivity.this, FriendsActivity.class);
+                startActivity(activityIntent);
                 break;
             }
             case R.id.navigationSearch: {

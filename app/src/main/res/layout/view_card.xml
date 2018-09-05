@@ -40,23 +40,36 @@
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/card_title" />
 
-                <TextView
-                    android:id="@+id/markerCategory"
-                    android:ellipsize="end"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@id/markerName"
+                <LinearLayout
+                    android:layout_alignTop="@id/markerName"
+                    android:layout_marginTop="13dp"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentTop="true"
-                    android:paddingLeft="@dimen/category_padding"
-                    android:paddingRight="@dimen/category_padding"
-                    android:layout_marginStart="@dimen/card_title_padding"
-                    android:layout_marginEnd="@dimen/card_title_padding"
-                    android:background="@drawable/view_border"
-                    android:textAlignment="center"
-                    android:gravity="center_vertical"
-                    android:textSize="@dimen/category" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/markerCategoryImage"
+                        android:src="@drawable/ic_tag"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="@dimen/category"
+                        android:layout_height="@dimen/category"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="0dp"/>
+                    <TextView
+                        android:id="@+id/markerCategory"
+                        android:ellipsize="end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/category_padding"
+                        android:paddingRight="@dimen/category_padding"
+                        android:layout_marginEnd="@dimen/card_title_padding"
+                        android:textAlignment="center"
+                        android:gravity="center_vertical"
+                        android:textSize="@dimen/category" />
+                </LinearLayout>
+
             </RelativeLayout>
 
             <TextView

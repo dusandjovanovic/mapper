@@ -45,16 +45,20 @@ public class MarkersAdapter extends RecyclerView.Adapter<MarkersAdapter.MarkersH
         Marker markerInstance = mMarkerList.get(i);
         String category = markerInstance.getCategory();
         switch (category){
-            case ("travel"):
+            case ("Travel"):
+                markersHandler.markerCategoryImage.setColorFilter(context.getResources().getColor(R.color.markerTravel));
                 markersHandler.markerCategory.setTextColor(context.getResources().getColor(R.color.markerTravel));
                 break;
-            case ("nature"):
+            case ("Nature"):
+                markersHandler.markerCategoryImage.setColorFilter(context.getResources().getColor(R.color.markerNature));
                 markersHandler.markerCategory.setTextColor(context.getResources().getColor(R.color.markerNature));
                 break;
-            case ("avoid"):
+            case ("Avoid"):
+                markersHandler.markerCategoryImage.setColorFilter(context.getResources().getColor(R.color.markerAvoid));
                 markersHandler.markerCategory.setTextColor(context.getResources().getColor(R.color.markerAvoid));
                 break;
             default:
+                markersHandler.markerCategoryImage.setColorFilter(context.getResources().getColor(R.color.marker));
                 markersHandler.markerCategory.setTextColor(context.getResources().getColor(R.color.marker));
         }
         Glide.with(context).load(markerInstance.getImageURL()).into(markersHandler.markerImage);
@@ -75,13 +79,14 @@ public class MarkersAdapter extends RecyclerView.Adapter<MarkersAdapter.MarkersH
         private ClickListener mListener;
         // each data item is just a string in this case
         public TextView markerCategory, markerName, markerDescription;
-        public ImageView markerImage;
+        public ImageView markerImage, markerCategoryImage;
         public MarkersHolder(View view, ClickListener listener) {
             super(view);
             this.markerName = view.findViewById(R.id.markerName);
             this.markerImage = view.findViewById(R.id.markerImage);
             this.markerCategory = view.findViewById(R.id.markerCategory);
             this.markerDescription = view.findViewById(R.id.markerDescription);
+            this.markerCategoryImage = view.findViewById(R.id.markerCategoryImage);
             mListener = listener;
             view.setOnClickListener(this);
         }
