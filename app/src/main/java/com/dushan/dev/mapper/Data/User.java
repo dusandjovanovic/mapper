@@ -22,6 +22,9 @@ public class User {
     private double latitude;
     private double longitude;
 
+    @Exclude
+    public String key;
+
     public User() {}
 
     public User(String email, String name, String lastName, String about, String phoneNumber, Uri image) {
@@ -103,4 +106,11 @@ public class User {
         this.longitude = longitude;
     }
 
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 }

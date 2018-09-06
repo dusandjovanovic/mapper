@@ -36,7 +36,9 @@ public class Social {
         this.friends.add(friend);
     }
 
-    public void removeFriend(String friend) { this.friends.remove(friend);}
+    public void removeFriend(String friend) {
+        this.friends.remove(friend);
+    }
 
     public void addRequest(String request) {
         this.requests.add(request);

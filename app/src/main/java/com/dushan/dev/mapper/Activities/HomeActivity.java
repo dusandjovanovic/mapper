@@ -27,6 +27,7 @@ import com.dushan.dev.mapper.Adapters.MarkersAdapter;
 import com.dushan.dev.mapper.Data.Marker;
 import com.dushan.dev.mapper.Data.MarkerData;
 import com.dushan.dev.mapper.Data.SavedMarkerData;
+import com.dushan.dev.mapper.Data.SocialData;
 import com.dushan.dev.mapper.Data.User;
 import com.dushan.dev.mapper.Data.UserData;
 import com.dushan.dev.mapper.Interfaces.ClickListener;
@@ -43,6 +44,7 @@ public class HomeActivity extends AppCompatActivity
 
     private final int RECENT_TAB = 1;
     private final int SAVED_TAB = 2;
+    private int selectedTab;
 
     private SharedPreferences sharedPref;
 
@@ -50,7 +52,6 @@ public class HomeActivity extends AppCompatActivity
     private TextView recentTab, savedTab;
     private View recentHighlight, savedHighlight;
     private RecyclerView mainRecycler;
-    private int selectedTab;
     private MarkersAdapter markersAdapter;
     private FloatingActionButton addMarkerButton;
 
@@ -62,6 +63,7 @@ public class HomeActivity extends AppCompatActivity
     private MarkerData markerData;
     private SavedMarkerData savedData;
     private UserData userData;
+    private SocialData socialData;
 
     private FirebaseAuth mAuth;
 
@@ -77,6 +79,8 @@ public class HomeActivity extends AppCompatActivity
         markerData = MarkerData.getInstance(userId);
         savedData = SavedMarkerData.getInstance(userId);
         userData = UserData.getInstance(userId);
+        socialData = SocialData.getInstance(userId, getApplicationContext());
+
         sharedPref = getSharedPreferences("mapper", MODE_PRIVATE);
         if (!sharedPref.contains("backgroundService")) {
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -261,7 +265,6 @@ public class HomeActivity extends AppCompatActivity
                     markerActivity.putExtra("longitude", savedData.getMarkers().get(position).getLongitude());
                     markerActivity.putExtra("markerKey", savedData.getMarkers().get(position).getKey());
                 }
-
                 startActivity(markerActivity);
             };
             markersAdapter = new MarkersAdapter(getApplicationContext(), markerList, listener);

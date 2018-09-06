@@ -90,4 +90,8 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_friends">FriendsActivity</string>
     <string name="title_activity_account">AccountActivity</string>
+
+    <!--Friends Activity-->
+    <string name="send">Send</string>
+    <string name="pending">Requests</string>
 </resources>
