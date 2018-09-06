@@ -13,6 +13,7 @@ public class MarkerData {
     private static ArrayList<Marker> markers;
     private static HashMap<String, Integer> myPlacesIndexMapping;
     private static String FIREBASE_CHILD = "markers";
+    private static String userId;
     private static DatabaseReference database;
 
     public static MarkerData instance = null;
@@ -20,6 +21,7 @@ public class MarkerData {
     private static ListUpdatedEventListener updateListener;
 
     private MarkerData(String userID) {
+        this.userId = userID;
         markers = new ArrayList<Marker>();
         myPlacesIndexMapping = new HashMap<String, Integer>();
         database = FirebaseDatabase.getInstance().getReference("users/" + userID);
@@ -55,7 +57,7 @@ public class MarkerData {
             String myPlaceKey = dataSnapshot.getKey();
             if(!myPlacesIndexMapping.containsKey(myPlaceKey)) {
                 Marker marker = dataSnapshot.getValue(Marker.class);
-                marker.key = myPlaceKey;
+                marker.setKey(myPlaceKey);
                 markers.add(marker);
                 myPlacesIndexMapping.put(myPlaceKey, markers.size() - 1);
 
@@ -68,7 +70,7 @@ public class MarkerData {
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
             String myPlaceKey = dataSnapshot.getKey();
             Marker marker = dataSnapshot.getValue(Marker.class);
-            marker.key = myPlaceKey;
+            marker.setKey(myPlaceKey);
             if(myPlacesIndexMapping.containsKey(myPlaceKey)){
                 int index = myPlacesIndexMapping.get(myPlaceKey);
                 markers.set(index, marker);
@@ -106,7 +108,6 @@ public class MarkerData {
         }
     };
 
-
     public static MarkerData getInstance(String userId) {
         if (instance == null)
             instance = new MarkerData(userId);
@@ -117,12 +118,13 @@ public class MarkerData {
         return markers;
     }
 
-    public void addNewMarker(Marker place) {
+    public void addNewMarker(Marker marker) {
         String key = database.push().getKey();
-        markers.add(place);
+        markers.add(marker);
+        marker.setAuthorKey(userId);
         myPlacesIndexMapping.put(key, markers.size() - 1);
-        database.child(FIREBASE_CHILD).child(key).setValue(place);
-        place.key = key;
+        database.child(FIREBASE_CHILD).child(key).setValue(marker);
+        marker.key = key;
     }
 
     public Marker getPlace(int index) {

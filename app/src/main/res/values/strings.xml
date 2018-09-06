@@ -59,14 +59,21 @@
     <string name="download_success">Background service: success</string>
     <string name="download_failure">Background service: failure</string>
     <string name="background_service">Use background service</string>
+    <string name="background_interval">Background service interval</string>
     <string name="success">Background service finished</string>
+    <string-array name="intervals">
+        <item>1000</item>
+        <item>10000</item>
+        <item>60000</item>
+        <item>120000</item>
+    </string-array>
 
     <!--New Marker Activity-->
     <string name="photo">Photo</string>
     <string name="video">Video</string>
     <string name="audio">Audio</string>
     <string name="browse_or_capture">Browse or capture</string>
-    <string name="confirmation_text">I am aware this marker will include my current location</string>
+    <string name="confirmation_text">I agree to provide my current location</string>
 
     <!--New Marker Detail Activity-->
     <string name="describe_this_place">Describe this place...</string>

@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dushan.dev.mapper.Adapters.SimpleListAdapter;
+import com.dushan.dev.mapper.Data.LocationData;
 import com.dushan.dev.mapper.Data.User;
 import com.dushan.dev.mapper.Data.UserData;
 import com.dushan.dev.mapper.R;
@@ -44,6 +45,7 @@ public class FriendsActivity extends AppCompatActivity
 
     private SharedPreferences sharedPref;
     private UserData userData;
+    private LocationData locationData;
     private FirebaseAuth mAuth;
 
     private RecyclerView recyclerView;
@@ -62,6 +64,7 @@ public class FriendsActivity extends AppCompatActivity
 
         mAuth = FirebaseAuth.getInstance();
         userData = UserData.getInstance(mAuth.getUid());
+        locationData = LocationData.getInstance(mAuth.getUid());
         sharedPref = getSharedPreferences("mapper", MODE_PRIVATE);
 
         toolbar = findViewById(R.id.friendsToolbar);

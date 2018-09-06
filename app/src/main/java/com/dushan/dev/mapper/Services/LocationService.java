@@ -1,8 +1,10 @@
 package com.dushan.dev.mapper.Services;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -11,11 +13,19 @@ import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
+import com.dushan.dev.mapper.Data.LocationData;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.gms.location.LocationListener;
+
 public class LocationService extends Service {
     private static final String TAG = "LocationService";
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 1000;
-    private static final float LOCATION_DISTANCE = 10f;
+    private static int LOCATION_INTERVAL = 10000;
+    private static final float LOCATION_DISTANCE = 0;
+    private LocationData locationData;
+    private FirebaseAuth mAuth;
+    private SharedPreferences sharedPref;
+
 
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
@@ -27,8 +37,9 @@ public class LocationService extends Service {
 
         @Override
         public void onLocationChanged(Location location) {
-            Log.e(TAG, "onLocationChanged: " + location);
+            Log.e(TAG, "locationUpdated: " + location);
             mLastLocation.set(location);
+            locationData.changeLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude());
         }
 
         @Override
@@ -65,14 +76,15 @@ public class LocationService extends Service {
 
     @Override
     public void onCreate() {
-
-        Log.e(TAG, "onCreate");
-
+        Log.e(TAG, "locationService: started");
+        initializeService();
         initializeLocationManager();
+        sharedPref = getSharedPreferences("mapper", MODE_PRIVATE);
 
         try {
+            LOCATION_INTERVAL = sharedPref.getInt("backgroundInterval", 10000);
             mLocationManager.requestLocationUpdates(
-                    LocationManager.PASSIVE_PROVIDER,
+                    LocationManager.GPS_PROVIDER,
                     LOCATION_INTERVAL,
                     LOCATION_DISTANCE,
                     mLocationListeners[0]
@@ -107,5 +119,10 @@ public class LocationService extends Service {
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         }
+    }
+
+    private void initializeService() {
+        mAuth = FirebaseAuth.getInstance();
+        locationData = LocationData.getInstance(mAuth.getCurrentUser().getUid());
     }
 }

@@ -17,6 +17,7 @@ public class Marker {
 
     @Exclude
     public String key;
+    public String authorKey;
 
     public Marker () { }
 
@@ -29,6 +30,22 @@ public class Marker {
         this.imageURL = imageURL;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getAuthorKey() {
+        return authorKey;
+    }
+
+    public void setAuthorKey(String authorKey) {
+        this.authorKey = authorKey;
     }
 
     public double getLongitude() {

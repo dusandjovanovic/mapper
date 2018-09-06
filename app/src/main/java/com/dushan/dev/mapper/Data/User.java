@@ -6,6 +6,8 @@ import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @IgnoreExtraProperties
 public class User {
@@ -15,23 +17,25 @@ public class User {
     private String phoneNumber;
     private String email;
     private String image;
+    private ArrayList<Long> reach;
 
     private double latitude;
     private double longitude;
 
-    private int reach;
-
     public User() {}
 
-    public User(String email, String name, String lastName, String about, String phoneNumber, Uri image, int reach, double latitude, double longitude) {
+    public User(String email, String name, String lastName, String about, String phoneNumber, Uri image) {
         this.email = email;
         this.name = name;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.about = about;
         this.image = image.toString();
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.reach = new ArrayList<Long>();
+    }
+
+    public void impactReach() {
+        this.reach.add(System.currentTimeMillis());
     }
 
     public String getName() {
@@ -79,17 +83,24 @@ public class User {
 
     public void setEmail(String email) { this.email = email; }
 
-    public int getReach() { return reach; }
+    public ArrayList<Long> getReach() { return reach; }
 
-    public void setReach(int reach) { this.reach = reach; }
+    public void setReach(ArrayList<Long> reach) { this.reach = reach; }
 
     public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) { this.latitude = latitude; }
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
 
-    public double getLongitude() { return longitude; }
+    public double getLongitude() {
+        return longitude;
+    }
 
-    public void setLongitude(double longitude) { this.longitude = longitude; }
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.dushan.dev.mapper.Activities;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -11,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,6 +24,7 @@ import com.dushan.dev.mapper.Data.MarkerData;
 import com.dushan.dev.mapper.Data.SavedMarkerData;
 import com.dushan.dev.mapper.Data.UserData;
 import com.dushan.dev.mapper.R;
+import com.dushan.dev.mapper.Services.LocationService;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
@@ -46,6 +49,8 @@ public class MarkerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_marker);
         Toolbar toolbar = (Toolbar) findViewById(R.id.markerToolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         mAuth = FirebaseAuth.getInstance();
@@ -53,11 +58,22 @@ public class MarkerActivity extends AppCompatActivity {
         savedData = SavedMarkerData.getInstance(userId);
 
         extras = getIntent().getExtras();
-        marker = new Marker(extras.getString("name"), extras.getString("address"), extras.getString("category"), extras.getString("author"), extras.getString("description"), extras.getString("imageURL"),
-                extras.getDouble("latitude"), extras.getDouble("longitude"));
+        marker = new Marker(extras.getString("name"), extras.getString("address"), extras.getString("category"), extras.getString("author"), extras.getString("description"), extras.getString("imageURL"), extras.getDouble("latitude"), extras.getDouble("longitude"));
+        marker.setKey(extras.getString("markerKey"));
         connectViews();
         updateViews();
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     private void connectViews() {
         markerNameText = findViewById(R.id.markerNameText);
@@ -91,8 +107,10 @@ public class MarkerActivity extends AppCompatActivity {
         markerGetDirectionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Getting directions..", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent mapsActivityIntent = new Intent(MarkerActivity.this, MapsActivity.class);
+                mapsActivityIntent.putExtra("latitude", marker.getLatitude());
+                mapsActivityIntent.putExtra("longitude", marker.getLongitude());
+                startActivity(mapsActivityIntent);
             }
         });
     }

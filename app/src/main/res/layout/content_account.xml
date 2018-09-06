@@ -102,33 +102,6 @@
                 android:orientation="horizontal"
                 android:padding="8dp">
                 <ImageView
-                    android:src="@drawable/ic_statistics"
-                    android:tint="@color/mainTextColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"/>
-                <TextView
-                    android:id="@+id/accountReach"
-                    android:maxLines="1"
-                    android:gravity="center"
-                    android:textSize="16sp"
-                    android:padding="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            </android.support.constraint.ConstraintLayout>
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <android.support.constraint.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp">
-                <ImageView
                     android:src="@drawable/ic_location_near"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -11,11 +11,12 @@ import android.widget.TextView;
 
 import com.dushan.dev.mapper.R;
 
+import java.text.DecimalFormat;
 import java.util.Objects;
 
 public class AccountActivity extends AppCompatActivity {
 
-    private TextView accountName, accountLastName, accountPhone, accountEmail, accountLocation, accountReach, accountAbout;
+    private TextView accountName, accountLastName, accountPhone, accountEmail, accountLocation, accountAbout;
     private String name, lastName, phone, email, about;
     private double latitude, longitude;
     private int reach;
@@ -49,7 +50,6 @@ public class AccountActivity extends AppCompatActivity {
         accountPhone = findViewById(R.id.accountPhone);
         accountEmail = findViewById(R.id.accountEmail);
         accountLocation = findViewById(R.id.accountLocation);
-        accountReach = findViewById(R.id.accountReach);
         accountAbout = findViewById(R.id.accountAbout);
     }
 
@@ -58,8 +58,7 @@ public class AccountActivity extends AppCompatActivity {
         accountLastName.setText(lastName);
         accountPhone.setText(phone);
         accountEmail.setText(email);
-        accountLocation.setText(String.valueOf(longitude) + " " + String.valueOf(latitude));
-        accountReach.setText(String.valueOf(reach));
+        accountLocation.setText(new DecimalFormat(".## ").format(latitude) + "/ " + new DecimalFormat(".##").format(longitude));
         accountAbout.setText(about);
         accountLocation.setOnClickListener(new View.OnClickListener() {
             @Override

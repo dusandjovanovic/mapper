@@ -1,9 +1,15 @@
 package com.dushan.dev.mapper.Activities;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -25,6 +31,8 @@ import com.dushan.dev.mapper.Data.User;
 import com.dushan.dev.mapper.Data.UserData;
 import com.dushan.dev.mapper.Interfaces.ClickListener;
 import com.dushan.dev.mapper.R;
+import com.dushan.dev.mapper.Services.LocationService;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -48,6 +56,8 @@ public class HomeActivity extends AppCompatActivity
 
     private String userId;
     private String email;
+    private int interval;
+    private boolean backgroundService;
 
     private MarkerData markerData;
     private SavedMarkerData savedData;
@@ -68,6 +78,26 @@ public class HomeActivity extends AppCompatActivity
         savedData = SavedMarkerData.getInstance(userId);
         userData = UserData.getInstance(userId);
         sharedPref = getSharedPreferences("mapper", MODE_PRIVATE);
+        if (!sharedPref.contains("backgroundService")) {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt("backgroundInterval", 10000);
+            editor.putBoolean("backgroundService", true);
+            backgroundService = true;
+            editor.commit();
+        }
+        else
+            backgroundService = sharedPref.getBoolean("backgroundService", false);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        else {
+            if (backgroundService && !isMyServiceRunning(LocationService.class)) {
+                Intent serviceIntent = new Intent(this, LocationService.class);
+                startService(serviceIntent);
+            }
+        }
 
         toolbar = (Toolbar) findViewById(R.id.homeToolbar);
         setSupportActionBar(toolbar);
@@ -80,6 +110,21 @@ public class HomeActivity extends AppCompatActivity
 
         selectedTab = RECENT_TAB;
         connectViews();
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResult) {
+        switch (requestCode) {
+            case 1: {
+                if(grantResult.length > 0 && grantResult[0] == PackageManager.PERMISSION_DENIED) {
+                    if (backgroundService && !isMyServiceRunning(LocationService.class)) {
+                        Intent serviceIntent = new Intent(this, LocationService.class);
+                        startService(serviceIntent);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -160,6 +205,16 @@ public class HomeActivity extends AppCompatActivity
         return true;
     }
 
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void connectViews() {
         recentTab = findViewById(R.id.recentTab);
         savedTab = findViewById(R.id.savedTab);
@@ -193,6 +248,7 @@ public class HomeActivity extends AppCompatActivity
                     markerActivity.putExtra("imageURL", markerData.getMarkers().get(position).getImageURL());
                     markerActivity.putExtra("latitude", markerData.getMarkers().get(position).getLatitude());
                     markerActivity.putExtra("longitude", markerData.getMarkers().get(position).getLongitude());
+                    markerActivity.putExtra("markerKey", markerData.getMarkers().get(position).getKey());
                 }
                 else {
                     markerActivity.putExtra("name", savedData.getMarkers().get(position).getName());
@@ -203,6 +259,7 @@ public class HomeActivity extends AppCompatActivity
                     markerActivity.putExtra("imageURL", savedData.getMarkers().get(position).getImageURL());
                     markerActivity.putExtra("latitude", savedData.getMarkers().get(position).getLatitude());
                     markerActivity.putExtra("longitude", savedData.getMarkers().get(position).getLongitude());
+                    markerActivity.putExtra("markerKey", savedData.getMarkers().get(position).getKey());
                 }
 
                 startActivity(markerActivity);

@@ -12,20 +12,32 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
+import com.dushan.dev.mapper.Data.Marker;
+import com.dushan.dev.mapper.Interfaces.GlideApp;
 import com.dushan.dev.mapper.R;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+        implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener {
 
     private SharedPreferences sharedPref;
     private Toolbar toolbar;
+    Spinner settingsBackgroundServiceSpinner;
+    Switch settingsBackgroundServiceSwitch;
 
     private String userId;
     private String email;
+    private int interval;
+    private boolean backgroundService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +47,8 @@ public class SettingsActivity extends AppCompatActivity
         sharedPref = getSharedPreferences("mapper", MODE_PRIVATE);
         userId = sharedPref.getString("userId", null);
         email = sharedPref.getString("email", null);
+        interval = sharedPref.getInt("backgroundInterval", 10000);
+        backgroundService = sharedPref.getBoolean("backgroundService", true);
 
         toolbar = (Toolbar) findViewById(R.id.settingsToolbar);
         setSupportActionBar(toolbar);
@@ -50,6 +64,7 @@ public class SettingsActivity extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername = (TextView) headerView.findViewById(R.id.navigationDrawerEmail);
         navUsername.setText(email);
+        connectViews();
     }
 
     @Override
@@ -99,5 +114,55 @@ public class SettingsActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.settingsDrawer);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        interval = Integer.parseInt(adapterView.getItemAtPosition(i).toString());
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("backgroundInterval", interval);
+        editor.commit();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+    private void connectViews() {
+        settingsBackgroundServiceSpinner = findViewById(R.id.settingsBackgroundServiceSpinner);
+        settingsBackgroundServiceSwitch = findViewById(R.id.settingsBackgroundServiceSwitch);
+        initiateActivity();
+    }
+
+    private void initiateActivity() {
+        settingsBackgroundServiceSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean("backgroundService", isChecked);
+                editor.commit();
+            }
+        });
+
+        settingsBackgroundServiceSwitch.setChecked(backgroundService);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.intervals, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        settingsBackgroundServiceSpinner.setAdapter(adapter);
+        settingsBackgroundServiceSpinner.setOnItemSelectedListener(this);
+        switch (interval) {
+            case 1000:
+                settingsBackgroundServiceSpinner.setSelection(0);
+                break;
+            case 10000:
+                settingsBackgroundServiceSpinner.setSelection(1);
+                break;
+            case 60000:
+                settingsBackgroundServiceSpinner.setSelection(2);
+                break;
+            case 120000:
+                settingsBackgroundServiceSpinner.setSelection(3);
+                break;
+        }
     }
 }

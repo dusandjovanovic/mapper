@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -16,15 +19,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.dushan.dev.mapper.Data.Marker;
+import com.dushan.dev.mapper.Data.MarkerData;
 import com.dushan.dev.mapper.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
@@ -37,7 +45,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private int state = 0;
 
     private GoogleMap mMap;
-    private LatLng currentLocation;
+    private LatLng currentLocation = null;
+
+    private FirebaseAuth mAuth;
+    private String userId;
+    private MarkerData markerData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +58,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        mAuth = FirebaseAuth.getInstance();
+        userId = mAuth.getCurrentUser().getUid();
+        markerData = MarkerData.getInstance(userId);
+        Intent intent = getIntent();
+
+        double latitude = intent.getDoubleExtra("latitude", 0);
+        double longitude = intent.getDoubleExtra("longitude", 0);
+        if (latitude != 0) {
+            currentLocation = new LatLng(latitude, longitude);
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.mapsToolbar);
         setSupportActionBar(toolbar);
@@ -74,13 +97,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         else{
             mMap.setMyLocationEnabled(true);
+            initiateMarkers();
         }
 
         try {
             boolean success = googleMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
                             this, R.raw.style_json));
-
             if (!success) {
                 Log.e(TAG, "Style parsing failed.");
             }
@@ -106,7 +129,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void initiateMarkers() {
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        if (currentLocation != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        }
+        for (Marker marker: markerData.getMarkers()) {
+            LatLng markerLoation = new LatLng(marker.getLatitude(), marker.getLongitude());
+            Drawable circleDrawable = getResources().getDrawable(R.drawable.ic_location_marker_place);
+            BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
+            mMap.addMarker(new MarkerOptions()
+                    .position(markerLoation)
+                    .snippet(marker.getDescription())
+                    .title(marker.getName())
+                    .icon(markerIcon)
+            );
+        }
+    }
+
+    private BitmapDescriptor getMarkerIconFromDrawable(Drawable drawable) {
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 }
