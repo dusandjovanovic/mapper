@@ -102,7 +102,8 @@ public class NewMarkerDetailActivity extends AppCompatActivity implements Adapte
                             newMarkerDetailDescriptionText.getText().toString(),
                             imageURL,
                             latitude,
-                            longitude);
+                            longitude,
+                            System.currentTimeMillis());
                     markerData.addNewMarker(marker);
                     Intent activityIntent = new Intent(NewMarkerDetailActivity.this, HomeActivity.class);
                     startActivity(activityIntent);

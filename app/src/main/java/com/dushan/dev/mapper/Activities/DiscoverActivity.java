@@ -145,6 +145,8 @@ public class DiscoverActivity extends AppCompatActivity
                 markerActivity.putExtra("imageURL", markerData.getMarkers().get(position).getImageURL());
                 markerActivity.putExtra("latitude", markerData.getMarkers().get(position).getLatitude());
                 markerActivity.putExtra("longitude", markerData.getMarkers().get(position).getLongitude());
+                markerActivity.putExtra("dateTime", markerData.getMarkers().get(position).getDateTime());
+                markerActivity.putExtra("markerKey", markerData.getMarkers().get(position).getKey());
                 startActivity(markerActivity);
             };
             markersAdapter = new MarkersAdapter(getApplicationContext(), markerList, listener);

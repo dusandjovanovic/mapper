@@ -58,7 +58,7 @@ public class MarkerActivity extends AppCompatActivity {
         savedData = SavedMarkerData.getInstance(userId);
 
         extras = getIntent().getExtras();
-        marker = new Marker(extras.getString("name"), extras.getString("address"), extras.getString("category"), extras.getString("author"), extras.getString("description"), extras.getString("imageURL"), extras.getDouble("latitude"), extras.getDouble("longitude"));
+        marker = new Marker(extras.getString("name"), extras.getString("address"), extras.getString("category"), extras.getString("author"), extras.getString("description"), extras.getString("imageURL"), extras.getDouble("latitude"), extras.getDouble("longitude"), extras.getLong("dateTime"));
         marker.setKey(extras.getString("markerKey"));
         connectViews();
         updateViews();

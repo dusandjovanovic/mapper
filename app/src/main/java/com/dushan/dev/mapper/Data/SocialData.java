@@ -53,9 +53,16 @@ public class SocialData {
 
         socialRequests = new ArrayList<User>();
         socialFriends = new ArrayList<User>();
+        socialMarkers = new ArrayList<Marker>();
 
         this.context = context;
         notificationHandler = NotificationHandler.getInstance(this.context);
+    }
+
+    public static SocialData getInstance(String userId, Context context) {
+        if (instance == null)
+            instance = new SocialData(userId, context);
+        return instance;
     }
 
     public void setFriendsListener(FriendsUpdatedEventListener listener) {
@@ -286,37 +293,31 @@ public class SocialData {
                 .child(mAuth.getCurrentUser().getUid()).setValue(true);
     }
 
-    public static SocialData getInstance(String userId, Context context) {
-        if (instance == null)
-            instance = new SocialData(userId, context);
-        return instance;
-    }
-
     public Social getSocialData() {
         return social;
     }
 
-    public static ArrayList<User> getSocialFriends() {
+    public ArrayList<User> getSocialFriends() {
         return socialFriends;
     }
 
-    public static void setSocialFriends(ArrayList<User> socialFriends) {
+    public void setSocialFriends(ArrayList<User> socialFriends) {
         SocialData.socialFriends = socialFriends;
     }
 
-    public static ArrayList<User> getSocialRequests() {
+    public ArrayList<User> getSocialRequests() {
         return socialRequests;
     }
 
-    public static void setSocialRequests(ArrayList<User> socialRequests) {
+    public void setSocialRequests(ArrayList<User> socialRequests) {
         SocialData.socialRequests = socialRequests;
     }
 
-    public static ArrayList<Marker> getSocialMarkers() {
+    public ArrayList<Marker> getSocialMarkers() {
         return socialMarkers;
     }
 
-    public static void setSocialMarkers(ArrayList<Marker> socialMarkers) {
+    public void setSocialMarkers(ArrayList<Marker> socialMarkers) {
         SocialData.socialMarkers = socialMarkers;
     }
 }

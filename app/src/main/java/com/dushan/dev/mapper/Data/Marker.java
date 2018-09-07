@@ -12,6 +12,8 @@ public class Marker {
     private String description;
     private String imageURL;
 
+    private long dateTime;
+
     private double latitude;
     private double longitude;
 
@@ -21,7 +23,7 @@ public class Marker {
 
     public Marker () { }
 
-    public Marker (String name, String address, String category, String author, String description, String imageURL, double latitude, double longitude) {
+    public Marker (String name, String address, String category, String author, String description, String imageURL, double latitude, double longitude, long dateTime) {
         this.name = name;
         this.address = address;
         this.category = category;
@@ -30,6 +32,7 @@ public class Marker {
         this.imageURL = imageURL;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.dateTime = dateTime;
     }
 
     public String getKey() {
@@ -111,5 +114,13 @@ public class Marker {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public long getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(long dateTime) {
+        this.dateTime = dateTime;
     }
 }

@@ -120,11 +120,14 @@ public class MarkerData {
 
     public void addNewMarker(Marker marker) {
         String key = database.push().getKey();
-        markers.add(marker);
         marker.setAuthorKey(userId);
+        marker.setKey(key);
+        markers.add(marker);
+        if(updateListener != null)
+            updateListener.onListUpdated();
+
         myPlacesIndexMapping.put(key, markers.size() - 1);
         database.child(FIREBASE_CHILD).child(key).setValue(marker);
-        marker.key = key;
     }
 
     public Marker getPlace(int index) {

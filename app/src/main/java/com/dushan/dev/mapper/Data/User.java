@@ -35,6 +35,8 @@ public class User {
         this.about = about;
         this.image = image.toString();
         this.reach = new ArrayList<Long>();
+        latitude = 0.0;
+        longitude = 0.0;
     }
 
     public void impactReach() {

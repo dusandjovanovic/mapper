@@ -37,7 +37,12 @@ public class LocationData {
     ValueEventListener latitudeEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            double locationSnapshot = (Double)dataSnapshot.getValue();
+            double locationSnapshot = 0.0;
+            if (dataSnapshot.getValue() instanceof Long){
+                locationSnapshot = 0.0;
+            } else if (dataSnapshot.getValue() instanceof Double){
+                locationSnapshot = (Double)dataSnapshot.getValue();
+            }
             location.setLatitude(locationSnapshot);
             if(updateListener != null)
                 updateListener.onLocationUpdated();
@@ -52,7 +57,12 @@ public class LocationData {
     ValueEventListener longitudeEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            double locationSnapshot = (Double)dataSnapshot.getValue();
+            double locationSnapshot = 0.0;
+            if (dataSnapshot.getValue() instanceof Long){
+                locationSnapshot = 0.0;
+            } else if (dataSnapshot.getValue() instanceof Double){
+                locationSnapshot = (Double)dataSnapshot.getValue();
+            }
             location.setLongitude(locationSnapshot);
             if(updateListener != null)
                 updateListener.onLocationUpdated();

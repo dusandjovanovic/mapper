@@ -21,6 +21,7 @@ import android.view.MenuItem;
 
 import com.dushan.dev.mapper.Data.Marker;
 import com.dushan.dev.mapper.Data.MarkerData;
+import com.dushan.dev.mapper.Data.MergedData;
 import com.dushan.dev.mapper.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -49,7 +50,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private FirebaseAuth mAuth;
     private String userId;
-    private MarkerData markerData;
+    private MergedData mergedData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getCurrentUser().getUid();
-        markerData = MarkerData.getInstance(userId);
+        mergedData = MergedData.getInstance(userId, getApplicationContext());
         Intent intent = getIntent();
 
         double latitude = intent.getDoubleExtra("latitude", 0);
@@ -133,7 +134,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         }
-        for (Marker marker: markerData.getMarkers()) {
+        for (Marker marker: mergedData.getMarkers()) {
             LatLng markerLoation = new LatLng(marker.getLatitude(), marker.getLongitude());
             Drawable circleDrawable = getResources().getDrawable(R.drawable.ic_location_marker_place);
             BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);

@@ -24,8 +24,10 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.dushan.dev.mapper.Adapters.MarkersAdapter;
+import com.dushan.dev.mapper.Data.LocationData;
 import com.dushan.dev.mapper.Data.Marker;
 import com.dushan.dev.mapper.Data.MarkerData;
+import com.dushan.dev.mapper.Data.MergedData;
 import com.dushan.dev.mapper.Data.SavedMarkerData;
 import com.dushan.dev.mapper.Data.SocialData;
 import com.dushan.dev.mapper.Data.User;
@@ -36,6 +38,9 @@ import com.dushan.dev.mapper.Services.LocationService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -57,13 +62,10 @@ public class HomeActivity extends AppCompatActivity
 
     private String userId;
     private String email;
-    private int interval;
     private boolean backgroundService;
 
-    private MarkerData markerData;
     private SavedMarkerData savedData;
-    private UserData userData;
-    private SocialData socialData;
+    private MergedData mergedData;
 
     private FirebaseAuth mAuth;
 
@@ -76,12 +78,8 @@ public class HomeActivity extends AppCompatActivity
         userId = mAuth.getCurrentUser().getUid();
         email = mAuth.getCurrentUser().getEmail();
 
-        markerData = MarkerData.getInstance(userId);
         savedData = SavedMarkerData.getInstance(userId);
-        userData = UserData.getInstance(userId);
-        socialData = SocialData.getInstance(userId, getApplicationContext());
-
-
+        mergedData = MergedData.getInstance(userId, getApplicationContext());
         sharedPref = getSharedPreferences("mapper", MODE_PRIVATE);
         if (!sharedPref.contains("backgroundService")) {
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -91,7 +89,7 @@ public class HomeActivity extends AppCompatActivity
             editor.commit();
         }
         else
-            backgroundService = sharedPref.getBoolean("backgroundService", false);
+            backgroundService = sharedPref.getBoolean("backgroundService", true);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{
@@ -237,7 +235,7 @@ public class HomeActivity extends AppCompatActivity
 
     private void initiateActivity() {
         setupListeners();
-        initiateRecyclerView(markerData.getMarkers());
+        initiateRecyclerView(mergedData.getMarkers());
     }
 
     private void initiateRecyclerView(List<Marker> markerList) {
@@ -245,15 +243,16 @@ public class HomeActivity extends AppCompatActivity
             ClickListener listener = (view, position) -> {
                 Intent markerActivity = new Intent(HomeActivity.this, MarkerActivity.class);
                 if (selectedTab == RECENT_TAB) {
-                    markerActivity.putExtra("name", markerData.getMarkers().get(position).getName());
-                    markerActivity.putExtra("author", markerData.getMarkers().get(position).getAuthor());
-                    markerActivity.putExtra("address", markerData.getMarkers().get(position).getAddress());
-                    markerActivity.putExtra("description", markerData.getMarkers().get(position).getDescription());
-                    markerActivity.putExtra("category", markerData.getMarkers().get(position).getCategory());
-                    markerActivity.putExtra("imageURL", markerData.getMarkers().get(position).getImageURL());
-                    markerActivity.putExtra("latitude", markerData.getMarkers().get(position).getLatitude());
-                    markerActivity.putExtra("longitude", markerData.getMarkers().get(position).getLongitude());
-                    markerActivity.putExtra("markerKey", markerData.getMarkers().get(position).getKey());
+                    markerActivity.putExtra("name", mergedData.getMarkers().get(position).getName());
+                    markerActivity.putExtra("author", mergedData.getMarkers().get(position).getAuthor());
+                    markerActivity.putExtra("address", mergedData.getMarkers().get(position).getAddress());
+                    markerActivity.putExtra("description", mergedData.getMarkers().get(position).getDescription());
+                    markerActivity.putExtra("category", mergedData.getMarkers().get(position).getCategory());
+                    markerActivity.putExtra("imageURL", mergedData.getMarkers().get(position).getImageURL());
+                    markerActivity.putExtra("latitude", mergedData.getMarkers().get(position).getLatitude());
+                    markerActivity.putExtra("longitude", mergedData.getMarkers().get(position).getLongitude());
+                    markerActivity.putExtra("dateTime", mergedData.getMarkers().get(position).getDateTime());
+                    markerActivity.putExtra("markerKey", mergedData.getMarkers().get(position).getKey());
                 }
                 else {
                     markerActivity.putExtra("name", savedData.getMarkers().get(position).getName());
@@ -264,6 +263,7 @@ public class HomeActivity extends AppCompatActivity
                     markerActivity.putExtra("imageURL", savedData.getMarkers().get(position).getImageURL());
                     markerActivity.putExtra("latitude", savedData.getMarkers().get(position).getLatitude());
                     markerActivity.putExtra("longitude", savedData.getMarkers().get(position).getLongitude());
+                    markerActivity.putExtra("dateTime", savedData.getMarkers().get(position).getDateTime());
                     markerActivity.putExtra("markerKey", savedData.getMarkers().get(position).getKey());
                 }
                 startActivity(markerActivity);
@@ -278,11 +278,12 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void setupListeners(){
-        markerData.setEventListener(new MarkerData.ListUpdatedEventListener() {
+        mergedData.setListener(new MergedData.MergedUpdatedEventListener() {
             @Override
-            public void onListUpdated() {
-                if (selectedTab == RECENT_TAB)
-                    initiateRecyclerView(markerData.getMarkers());
+            public void onUpdated() {
+                if (selectedTab == RECENT_TAB) {
+                    initiateRecyclerView(mergedData.getMarkers());
+                }
             }
         });
 
@@ -298,7 +299,7 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 selectedTab = RECENT_TAB;
-                initiateRecyclerView(markerData.getMarkers());
+                initiateRecyclerView(mergedData.getMarkers());
                 repaintTabs();
             }
         });
