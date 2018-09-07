@@ -5,6 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.dushan.dev.mapper.Handlers.NotificationHandler;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,10 +24,10 @@ public class SocialData {
     private static ArrayList<User> socialRequests;
     private static ArrayList<Marker> socialMarkers;
 
-    private static String FIREBASE_ROOT = "users";
-    private static String FIREBASE_CHILD_REQUESTS = "requests";
-    private static String FIREBASE_CHILD_FRIENDS = "friends";
-    private static String FIREBASE_CHILD_MARKERS = "markers";
+    private static final String FIREBASE_ROOT = "users";
+    private static final String FIREBASE_CHILD_REQUESTS = "requests";
+    private static final String FIREBASE_CHILD_FRIENDS = "friends";
+    private static final String FIREBASE_CHILD_MARKERS = "markers";
     private static DatabaseReference database;
     private static DatabaseReference root;
 
@@ -32,19 +35,24 @@ public class SocialData {
 
     private static FriendsUpdatedEventListener friendsUpdatedListener;
     private static RequestsUpdatedEventListener requestsUpdatedListener;
-    private static MakersUpdatedEventListener markersUpdatedListener;
+    private static MarkersUpdatedEventListener markersUpdatedListener;
 
     private NotificationHandler notificationHandler;
     private Context context;
+    private FirebaseAuth mAuth;
 
     private SocialData(String userID, Context context) {
         social = new Social();
         root = FirebaseDatabase.getInstance().getReference(FIREBASE_ROOT);
-        database = FirebaseDatabase.getInstance().getReference(FIREBASE_ROOT + "/" + userID);
+        database = FirebaseDatabase.getInstance().getReference(FIREBASE_ROOT).child(userID);
         database.child(FIREBASE_CHILD_REQUESTS).addChildEventListener(requestsEventListener);
         database.child(FIREBASE_CHILD_REQUESTS).addListenerForSingleValueEvent(requestsValueEventListener);
         database.child(FIREBASE_CHILD_FRIENDS).addChildEventListener(friendsEventListener);
         database.child(FIREBASE_CHILD_FRIENDS).addListenerForSingleValueEvent(friendsValueEventListener);
+        mAuth = FirebaseAuth.getInstance();
+
+        socialRequests = new ArrayList<User>();
+        socialFriends = new ArrayList<User>();
 
         this.context = context;
         notificationHandler = NotificationHandler.getInstance(this.context);
@@ -66,11 +74,11 @@ public class SocialData {
         void onRequestsUpdated();
     }
 
-    public void setMarkersListener(MakersUpdatedEventListener listener) {
+    public void setMarkersListener(MarkersUpdatedEventListener listener) {
         markersUpdatedListener = listener;
     }
 
-    public interface MakersUpdatedEventListener {
+    public interface MarkersUpdatedEventListener {
         void onMarkersUpdated();
     }
 
@@ -90,7 +98,7 @@ public class SocialData {
     ChildEventListener friendsEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            String delta = dataSnapshot.getValue(String.class);
+            String delta = dataSnapshot.getKey();
             addUserFriend(delta);
             if(friendsUpdatedListener != null)
                 friendsUpdatedListener.onFriendsUpdated();
@@ -133,7 +141,7 @@ public class SocialData {
     ChildEventListener requestsEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            String delta = dataSnapshot.getValue(String.class);
+            String delta = dataSnapshot.getKey();
             //notificationHandler.createSimpleNotification(context, "You have a new friend request.");
             addUserRequest(delta);
             if(requestsUpdatedListener != null)
@@ -147,8 +155,8 @@ public class SocialData {
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
-            String delta = dataSnapshot.getValue(String.class);
-            removeUserRequest(delta);
+            String delta = dataSnapshot.getKey();
+            addUserFriend(delta);
             if(requestsUpdatedListener != null)
                 requestsUpdatedListener.onRequestsUpdated();
         }
@@ -165,34 +173,20 @@ public class SocialData {
     };
 
     private void addUserFriend(String userId) {
-        social.addFriend(userId);
-        Query connectedUser = root.equalTo(userId);
-        connectedUser.addListenerForSingleValueEvent(new ValueEventListener() {
+        root.child(userId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User userSnapshot = dataSnapshot.getValue(User.class);
                 userSnapshot.setKey(userId);
 
-                socialFriends.add(userSnapshot);
-                addMarkersForUser(userId);
-
-                if(friendsUpdatedListener != null)
-                    friendsUpdatedListener.onFriendsUpdated();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        connectedUser.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User userSnapshot = dataSnapshot.getValue(User.class);
-                userSnapshot.setKey(userId);
-
-                changeUserFriend(userSnapshot);
+                if (!social.userPresentFriends(userId)) {
+                    social.addFriend(userId);
+                    socialFriends.add(userSnapshot);
+                    addMarkersForUser(userId);
+                }
+                else {
+                    changeUserFriend(userSnapshot);
+                }
 
                 if(friendsUpdatedListener != null)
                     friendsUpdatedListener.onFriendsUpdated();
@@ -249,14 +243,16 @@ public class SocialData {
 
 
     private void addUserRequest(String userId) {
-        social.addRequest(userId);
         root.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User userSnapshot = dataSnapshot.getValue(User.class);
                 userSnapshot.setKey(userId);
 
-                socialRequests.add(userSnapshot);
+                if (!social.userPresentRequests(userId)) {
+                    social.addRequest(userId);
+                    socialRequests.add(userSnapshot);
+                }
 
                 if(friendsUpdatedListener != null)
                     friendsUpdatedListener.onFriendsUpdated();
@@ -269,8 +265,25 @@ public class SocialData {
         });
     }
 
-    private void removeUserRequest(String userId) {
+    public void acceptUserRequest(String userId) {
         social.removeRequest(userId);
+        for (User user: socialRequests)
+            if (user.getKey().equals(userId)) {
+                socialRequests.remove(user);
+                break;
+            }
+
+        root.child(mAuth.getCurrentUser().getUid())
+                .child(FIREBASE_CHILD_REQUESTS).child(userId).removeValue();
+        root.child(mAuth.getCurrentUser().getUid())
+                .child(FIREBASE_CHILD_FRIENDS).child(userId).setValue(true);
+        root.child(userId).child(FIREBASE_CHILD_FRIENDS)
+                .child(mAuth.getCurrentUser().getUid()).setValue(true);
+    }
+
+    public void sendUserRequest(String userId) {
+        root.child(userId).child(FIREBASE_CHILD_REQUESTS)
+                .child(mAuth.getCurrentUser().getUid()).setValue(true);
     }
 
     public static SocialData getInstance(String userId, Context context) {

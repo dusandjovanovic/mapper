@@ -47,4 +47,20 @@ public class Social {
     public void removeRequest(String request) {
         this.requests.remove(request);
     }
+
+    public boolean userPresentFriends(String userId) {
+        for (String key : friends) {
+            if (key == userId)
+                return true;
+        }
+        return false;
+    }
+
+    public boolean userPresentRequests(String userId) {
+        for (String key : requests) {
+            if (key == userId)
+                return true;
+        }
+        return false;
+    }
 }

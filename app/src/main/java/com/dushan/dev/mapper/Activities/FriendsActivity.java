@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.dushan.dev.mapper.Adapters.SimpleListAdapter;
 import com.dushan.dev.mapper.Data.LocationData;
+import com.dushan.dev.mapper.Data.SocialData;
 import com.dushan.dev.mapper.Data.User;
 import com.dushan.dev.mapper.Data.UserData;
 import com.dushan.dev.mapper.R;
@@ -56,6 +57,7 @@ public class FriendsActivity extends AppCompatActivity
     private SimpleListAdapter mAdapter;
 
     private ArrayList<User> modelList = new ArrayList<>();
+    private SocialData socialData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,7 @@ public class FriendsActivity extends AppCompatActivity
 
         mAuth = FirebaseAuth.getInstance();
         userData = UserData.getInstance(mAuth.getUid());
+        socialData = SocialData.getInstance(mAuth.getUid(), getApplicationContext());
         locationData = LocationData.getInstance(mAuth.getUid());
         sharedPref = getSharedPreferences("mapper", MODE_PRIVATE);
 
@@ -188,8 +191,9 @@ public class FriendsActivity extends AppCompatActivity
         friendsAddFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent activityIntent = new Intent(FriendsActivity.this, FriendsAddActivity.class);
-                startActivity(activityIntent);
+//                Intent activityIntent = new Intent(FriendsActivity.this, FriendsAddActivity.class);
+//                startActivity(activityIntent);
+                socialData.acceptUserRequest("n4remrVZEETQAXo818O8rXPn1Bk1");
             }
         });
     }

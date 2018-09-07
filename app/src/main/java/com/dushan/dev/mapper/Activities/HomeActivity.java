@@ -81,6 +81,7 @@ public class HomeActivity extends AppCompatActivity
         userData = UserData.getInstance(userId);
         socialData = SocialData.getInstance(userId, getApplicationContext());
 
+
         sharedPref = getSharedPreferences("mapper", MODE_PRIVATE);
         if (!sharedPref.contains("backgroundService")) {
             SharedPreferences.Editor editor = sharedPref.edit();
