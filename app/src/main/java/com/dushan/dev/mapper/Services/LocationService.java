@@ -1,6 +1,5 @@
 package com.dushan.dev.mapper.Services;
 
-import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +14,6 @@ import android.util.Log;
 
 import com.dushan.dev.mapper.Data.LocationData;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.android.gms.location.LocationListener;
 
 public class LocationService extends Service {
     private static final String TAG = "LocationService";
@@ -25,7 +23,6 @@ public class LocationService extends Service {
     private LocationData locationData;
     private FirebaseAuth mAuth;
     private SharedPreferences sharedPref;
-
 
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
@@ -123,6 +120,6 @@ public class LocationService extends Service {
 
     private void initializeService() {
         mAuth = FirebaseAuth.getInstance();
-        locationData = LocationData.getInstance(mAuth.getCurrentUser().getUid());
+        locationData = LocationData.getInstance(mAuth.getCurrentUser().getUid(), getApplicationContext());
     }
 }

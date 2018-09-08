@@ -77,7 +77,7 @@ public class HomeActivity extends AppCompatActivity
         userId = mAuth.getCurrentUser().getUid();
         email = mAuth.getCurrentUser().getEmail();
 
-        locationData = LocationData.getInstance(userId);
+        locationData = LocationData.getInstance(userId, getApplicationContext());
         userData = UserData.getInstance(userId);
         markerData = MarkerData.getInstance(userId);
         socialData = SocialData.getInstance(userId, getApplicationContext());

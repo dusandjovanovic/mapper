@@ -9,16 +9,22 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.dushan.dev.mapper.Data.Marker;
 import com.dushan.dev.mapper.Data.MergedData;
 import com.dushan.dev.mapper.Data.SocialData;
 import com.dushan.dev.mapper.Data.User;
+import com.dushan.dev.mapper.Interfaces.GlideApp;
 import com.dushan.dev.mapper.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,15 +36,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.Objects;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
-    static final int PERMISSION_ACCESS_FINE_LOCATION = 1;
-    static final String TAG = "MAPS_FRAGMENT_ACTIVITY";
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+    static final String TAG = "MapsActivity";
 
     public static final int SHOW_MAP = 0;
-    public static final int CENTER_PLACE_ON_MAP = 1;
     private boolean searchView;
     private int state = 0;
 
@@ -49,6 +55,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String userId;
     private MergedData mergedData;
     private SocialData socialData;
+    private StorageReference mStorageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +67,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
 
         mAuth = FirebaseAuth.getInstance();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
         userId = mAuth.getCurrentUser().getUid();
         socialData = SocialData.getInstance(userId, getApplicationContext());
         mergedData = MergedData.getInstance(userId, getApplicationContext());
@@ -131,6 +139,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void initiateMarkers() {
+        mMap.setOnMarkerClickListener(this);
         if (searchView) {
             for (Marker marker: mergedData.getFilteredMarkers()) {
                 LatLng markerLoation = new LatLng(marker.getLatitude(), marker.getLongitude());
@@ -157,19 +166,47 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 );
             }
             for (User user: socialData.getSocialFriends()) {
-                LatLng markerLoation = new LatLng(user.getLatitude(), user.getLongitude());
-                Drawable circleDrawable = getResources().getDrawable(R.drawable.ic_location_marker_person);
-                BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
-                mMap.addMarker(new MarkerOptions()
-                        .position(markerLoation)
-                        .title(user.getName())
-                        .icon(markerIcon)
-                );
+                GlideApp.with(MapsActivity.this)
+                        .asBitmap()
+                        .fitCenter()
+                        .override(60, 60)
+                        .load(user.getImage())
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                LatLng markerLoation = new LatLng(user.getLatitude(), user.getLongitude());
+                                com.google.android.gms.maps.model.Marker marker = mMap.addMarker(new MarkerOptions()
+                                        .icon(BitmapDescriptorFactory.fromBitmap(resource))
+                                        .position(markerLoation)
+                                );
+                                marker.setTag(user);
+                            }
+                        });
             }
         }
         if (currentLocation != null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
         }
+    }
+
+    @Override
+    public boolean onMarkerClick(com.google.android.gms.maps.model.Marker marker) {
+        if (marker.getTag() instanceof User) {
+            User userData = (User) marker.getTag();
+            Intent activityIntent = new Intent(MapsActivity.this, AccountActivity.class);
+            activityIntent.putExtra("name", userData.getName());
+            activityIntent.putExtra("lastName", userData.getLastName());
+            activityIntent.putExtra("phone", userData.getPhoneNumber());
+            activityIntent.putExtra("email", userData.getEmail());
+            activityIntent.putExtra("latitude", userData.getLatitude());
+            activityIntent.putExtra("longitude", userData.getLongitude());
+            activityIntent.putExtra("about", userData.getAbout());
+            activityIntent.putExtra("reachImpact", userData.getReachImpact());
+            startActivity(activityIntent);
+            return true;
+        }
+        return false;
     }
 
     private BitmapDescriptor getMarkerIconFromDrawable(Drawable drawable) {

@@ -108,4 +108,7 @@
     <string name="send">Send</string>
     <string name="pending">Requests</string>
     <string name="get_directions_account">Take me to last known location</string>
+
+    <string name="channel_name">Mapper</string>
+    <string name="channel_description">Mapper</string>
 </resources>

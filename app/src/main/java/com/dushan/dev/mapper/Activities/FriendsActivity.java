@@ -56,7 +56,7 @@ public class FriendsActivity extends AppCompatActivity
         mAuth = FirebaseAuth.getInstance();
         userData = UserData.getInstance(mAuth.getUid());
         socialData = SocialData.getInstance(mAuth.getUid(), getApplicationContext());
-        locationData = LocationData.getInstance(mAuth.getUid());
+        locationData = LocationData.getInstance(mAuth.getUid(), getApplicationContext());
         sharedPref = getSharedPreferences("mapper", MODE_PRIVATE);
 
         toolbar = findViewById(R.id.friendsToolbar);

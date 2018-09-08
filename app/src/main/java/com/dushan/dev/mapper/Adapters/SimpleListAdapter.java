@@ -6,12 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.dushan.dev.mapper.Data.User;
-import com.dushan.dev.mapper.Interfaces.GlideApp;
 import com.dushan.dev.mapper.R;
 
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public class SimpleListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             genericViewHolder.itemTxtTitle.setText(model.getName());
             genericViewHolder.itemTxtMessage.setText(model.getPhoneNumber());
-            Glide.with(mContext).load(model.getImage()).into(genericViewHolder.imgUser);
+            Glide.with(mContext).load(model.getImage()).apply(RequestOptions.circleCropTransform()).into(genericViewHolder.imgUser);
         }
     }
 

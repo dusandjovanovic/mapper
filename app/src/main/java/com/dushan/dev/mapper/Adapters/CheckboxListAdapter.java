@@ -5,16 +5,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import java.util.ArrayList;
-import android.widget.CheckBox;
-import java.util.HashSet;
-import java.util.Set;
-import android.widget.CompoundButton;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.dushan.dev.mapper.Data.User;
 import com.dushan.dev.mapper.R;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CheckboxListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -53,7 +56,7 @@ public class CheckboxListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             genericViewHolder.itemTxtTitle.setText(model.getName());
             genericViewHolder.itemTxtMessage.setText(model.getPhoneNumber());
-            Glide.with(mContext).load(model.getImage()).into(genericViewHolder.imgUser);
+            Glide.with(mContext).load(model.getImage()).apply(RequestOptions.circleCropTransform()).into(genericViewHolder.imgUser);
 
             genericViewHolder.itemCheckList.setOnCheckedChangeListener(null);
             genericViewHolder.itemCheckList.setChecked(checkSet.contains(position));

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.dushan.dev.mapper.Data.User;
 import com.dushan.dev.mapper.R;
 
@@ -49,7 +50,7 @@ public class ReachListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             genericViewHolder.itemTxtTitle.setText(String.valueOf(position + 1) + ". " + model.getName());
             genericViewHolder.itemTxtMessage.setText("Reach impact: " + String.valueOf(model.getReachImpact()));
-            Glide.with(mContext).load(model.getImage()).into(genericViewHolder.imgUser);
+            Glide.with(mContext).load(model.getImage()).apply(RequestOptions.circleCropTransform()).into(genericViewHolder.imgUser);
         }
     }
 
