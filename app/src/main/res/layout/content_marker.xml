@@ -8,7 +8,7 @@
     tools:context=".Activities.MarkerActivity"
     tools:showIn="@layout/activity_marker">
 
-    <RelativeLayout
+        <RelativeLayout
         android:layout_marginTop="6dp"
         android:layout_marginBottom="6dp"
         android:layout_marginStart="3dp"
@@ -16,6 +16,17 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <VideoView
+            android:id="@+id/markerVideoView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="4:3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <android.support.v7.widget.CardView
             android:id="@+id/cardAuthor"
@@ -130,6 +141,20 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:textColor="@color/altTextColor" />
+
+        <Button
+            android:id="@+id/markerVideoViewButton"
+            android:layout_width="match_parent"
+            android:layout_below="@id/markerGetDirectionsButton"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_bg_white"
+            android:text="@string/stream"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="24dp"
+            android:layout_marginStart="24dp"
+            android:visibility="gone"
+            android:layout_marginTop="24dp"
+            android:textColor="@color/tabHighlightColor" />
     </RelativeLayout>
 
 </android.support.v4.widget.NestedScrollView>

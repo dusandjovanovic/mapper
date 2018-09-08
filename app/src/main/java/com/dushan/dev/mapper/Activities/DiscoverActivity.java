@@ -255,7 +255,7 @@ public class DiscoverActivity extends AppCompatActivity
 
         mProvider = new HeatmapTileProvider.Builder()
                 .data(heatMap)
-                .radius(40)
+                .radius(50)
                 .build();
 
         mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));

@@ -8,16 +8,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.dushan.dev.mapper.Activities.HomeActivity;
-import com.dushan.dev.mapper.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StreamDownloadTask;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 public class CloudDownloadService extends BaseService {
 
@@ -64,65 +62,37 @@ public class CloudDownloadService extends BaseService {
     private void downloadFromPath(final String downloadPath) {
         Log.d(TAG, "downloadFromPath:" + downloadPath);
 
-        // Mark task started
         taskStarted();
-        showProgressNotification(getString(R.string.progress_downloading), 0, 0);
 
-        // Download and get total bytes
-        mStorageRef.child(downloadPath).getStream(
-                new StreamDownloadTask.StreamProcessor() {
-                    @Override
-                    public void doInBackground(StreamDownloadTask.TaskSnapshot taskSnapshot,
-                                               InputStream inputStream) throws IOException {
-                        long totalBytes = taskSnapshot.getTotalByteCount();
-                        long bytesDownloaded = 0;
-
-                        byte[] buffer = new byte[1024];
-                        int size;
-
-                        while ((size = inputStream.read(buffer)) != -1) {
-                            bytesDownloaded += size;
-                            showProgressNotification(getString(R.string.progress_downloading),
-                                    bytesDownloaded, totalBytes);
-                        }
-
-                        // Close the stream at the end of the Task
-                        inputStream.close();
-                    }
-                })
-                .addOnSuccessListener(new OnSuccessListener<StreamDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(StreamDownloadTask.TaskSnapshot taskSnapshot) {
-                        Log.d(TAG, "download:SUCCESS");
-                        broadcastDownloadFinished(downloadPath, taskSnapshot.getTotalByteCount());
-                        taskCompleted();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Log.w(TAG, "download:FAILURE", exception);
-                        broadcastDownloadFinished(downloadPath, -1);
-                        taskCompleted();
-                    }
-                });
+        File localFile = null;
+        try {
+            localFile = File.createTempFile("videos", "mp4");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        File finalLocalFile = localFile;
+        mStorageRef.child(downloadPath).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                broadcastDownloadFinished(finalLocalFile.getAbsolutePath(), true);
+                taskCompleted();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                broadcastDownloadFinished(downloadPath, false);
+                taskCompleted();
+            }
+        });
     }
 
-    /**
-     * Broadcast finished download (success or failure).
-     * @return true if a running receiver received the broadcast.
-     */
-    private boolean broadcastDownloadFinished(String downloadPath, long bytesDownloaded) {
-        boolean success = bytesDownloaded != -1;
+    private boolean broadcastDownloadFinished(String downloadPath, boolean success) {
         String action = success ? DOWNLOAD_COMPLETED : DOWNLOAD_ERROR;
-
         Intent broadcast = new Intent(action)
-                .putExtra(EXTRA_DOWNLOAD_PATH, downloadPath)
-                .putExtra(EXTRA_BYTES_DOWNLOADED, bytesDownloaded);
+                .putExtra(EXTRA_DOWNLOAD_PATH, downloadPath);
         return LocalBroadcastManager.getInstance(getApplicationContext())
                 .sendBroadcast(broadcast);
     }
-
 
     public static IntentFilter getIntentFilter() {
         IntentFilter filter = new IntentFilter();

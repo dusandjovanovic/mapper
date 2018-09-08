@@ -41,6 +41,18 @@
                 android:layoutDirection="rtl"
                 android:layout_height="wrap_content" />
 
+            <RadioButton
+                android:id="@+id/newMarkerVideoRadio"
+                android:onClick="onRadioButtonClicked"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:layout_width="match_parent"
+                android:text="@string/video"
+                android:textAlignment="textStart"
+                android:layout_gravity="start"
+                android:layoutDirection="rtl"
+                android:layout_height="wrap_content" />
+
         </RadioGroup>
 
         <TextView

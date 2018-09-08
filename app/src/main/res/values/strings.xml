@@ -52,6 +52,7 @@
     <string name="address">Address</string>
     <string name="category">Category</string>
     <string name="get_directions">Take me there</string>
+    <string name="stream">Stream video content</string>
     <string name="keywords">Enter keywords</string>
 
     <!--Services-->
@@ -74,7 +75,7 @@
     <!--New Marker Activity-->
     <string name="photo">Photo from your gallery</string>
     <string name="photo_capture">Photo captured with a camera</string>
-    <string name="video">Video</string>
+    <string name="video">Video from your gallery</string>
     <string name="audio">Audio</string>
     <string name="browse_or_capture">Browse or capture</string>
     <string name="confirmation_text">I agree to provide my current location</string>
@@ -82,7 +83,7 @@
     <!--New Marker Detail Activity-->
     <string name="describe_this_place">Describe this place...</string>
     <string name="share">Share</string>
-    <string name="marker_about">You are allowed to add multimedia content to your marker. You can add a photo, video or audio files either from device or capture them instantly with a camera or microphone</string>
+    <string name="marker_about">You are allowed to add multimedia content to your marker. You can add a photo, video or audio files either from device or capture them instantly with a camera.</string>
     <string-array name="categories">
         <item>Travel</item>
         <item>Nature</item>

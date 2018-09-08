@@ -279,6 +279,10 @@ public class NewMarkerActivity extends AppCompatActivity {
                 if (checked)
                     mode = MARKER_PHOTO_CAPTURE;
                     break;
+            case R.id.newMarkerVideoRadio:
+                if (checked)
+                    mode = MARKER_VIDEO;
+                break;
             default:
                     break;
         }
