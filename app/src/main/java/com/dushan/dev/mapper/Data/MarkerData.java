@@ -16,7 +16,7 @@ public class MarkerData {
     private static String userId;
     private static DatabaseReference database;
 
-    public static MarkerData instance = null;
+    private static MarkerData instance = null;
 
     private static ListUpdatedEventListener updateListener;
 
@@ -145,5 +145,9 @@ public class MarkerData {
 
         for(int i = 0; i < markers.size(); i++)
             myPlacesIndexMapping.put(markers.get(i).key, i);
+    }
+
+    public void reinitateSingleton() {
+        instance = null;
     }
 }

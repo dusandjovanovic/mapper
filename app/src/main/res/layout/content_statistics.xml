@@ -10,5 +10,15 @@
     <include layout="@layout/view_toolbar"
         android:id="@+id/statisticsToolbar" />
 
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/statisticsChart"
+        android:layout_width="match_parent"
+        android:layout_height="250dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/statisticsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
 
 </LinearLayout>

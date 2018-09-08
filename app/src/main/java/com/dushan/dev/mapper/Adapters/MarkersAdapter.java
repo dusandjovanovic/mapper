@@ -1,19 +1,15 @@
 package com.dushan.dev.mapper.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.dushan.dev.mapper.Activities.HomeActivity;
-import com.dushan.dev.mapper.Activities.LoginActivity;
 import com.dushan.dev.mapper.Data.Marker;
 import com.dushan.dev.mapper.Interfaces.ClickListener;
 import com.dushan.dev.mapper.R;
@@ -56,6 +52,14 @@ public class MarkersAdapter extends RecyclerView.Adapter<MarkersAdapter.MarkersH
             case ("Avoid"):
                 markersHandler.markerCategoryImage.setColorFilter(context.getResources().getColor(R.color.markerAvoid));
                 markersHandler.markerCategory.setTextColor(context.getResources().getColor(R.color.markerAvoid));
+                break;
+            case ("Food"):
+                markersHandler.markerCategoryImage.setColorFilter(context.getResources().getColor(R.color.markerFood));
+                markersHandler.markerCategory.setTextColor(context.getResources().getColor(R.color.markerFood));
+                break;
+            case ("Music"):
+                markersHandler.markerCategoryImage.setColorFilter(context.getResources().getColor(R.color.markerMusic));
+                markersHandler.markerCategory.setTextColor(context.getResources().getColor(R.color.markerMusic));
                 break;
             default:
                 markersHandler.markerCategoryImage.setColorFilter(context.getResources().getColor(R.color.marker));

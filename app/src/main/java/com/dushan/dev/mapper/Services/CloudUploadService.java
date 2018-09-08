@@ -10,15 +10,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.dushan.dev.mapper.Activities.GetStartedActivity;
-import com.dushan.dev.mapper.Activities.HomeActivity;
-import com.dushan.dev.mapper.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -58,7 +54,7 @@ public class CloudUploadService extends BaseService {
         if (ACTION_UPLOAD.equals(intent.getAction())) {
             Uri fileUri = intent.getParcelableExtra(EXTRA_FILE_URI);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !fileUri.toString().contains("fname")) {
                 getContentResolver().takePersistableUriPermission(
                         fileUri,
                         Intent.FLAG_GRANT_READ_URI_PERMISSION);

@@ -1,5 +1,7 @@
 package com.dushan.dev.mapper.Data;
 
+import android.support.annotation.NonNull;
+
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -12,16 +14,22 @@ import java.util.HashMap;
 public class SavedMarkerData {
     private static ArrayList<Marker> markers;
     private static HashMap<String, Integer> myPlacesIndexMapping;
-    private static String FIREBASE_CHILD = "saved";
-    private static DatabaseReference database;
 
-    public static SavedMarkerData instance = null;
+    private static final String FIREBASE_CHILD = "saved";
+    private static final String FIREBASE_CHILD_REACH = "reach";
+    private static final String FIREBASE_CHILD_REACH_IMPACT = "reachImpact";
+    private static final String FIREBASE_ROOT = "users";
+    private static DatabaseReference database;
+    private static DatabaseReference root;
+
+    private static SavedMarkerData instance = null;
 
     private static ListUpdatedEventListener updateListener;
 
     private SavedMarkerData(String userID) {
         markers = new ArrayList<Marker>();
         myPlacesIndexMapping = new HashMap<String, Integer>();
+        root = FirebaseDatabase.getInstance().getReference(FIREBASE_ROOT);
         database = FirebaseDatabase.getInstance().getReference("users/" + userID);
         database.child(FIREBASE_CHILD).addChildEventListener(childEventListener);
         database.child(FIREBASE_CHILD).addListenerForSingleValueEvent(valueEventListener);
@@ -121,9 +129,30 @@ public class SavedMarkerData {
         if (!containsMarker(marker.getKey())) {
             String key = marker.getKey();
             markers.add(marker);
+            impactMarkerReach(marker);
             myPlacesIndexMapping.put(key, markers.size() - 1);
             database.child(FIREBASE_CHILD).child(key).setValue(marker);
         }
+    }
+
+    private void impactMarkerReach(Marker marker) {
+        String dateTimeKey = database.push().getKey();
+        root.child(marker.getAuthorKey())
+                .child(FIREBASE_CHILD_REACH).child(dateTimeKey).setValue(System.currentTimeMillis());
+        root.child(marker.getAuthorKey())
+                .child(FIREBASE_CHILD_REACH_IMPACT).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long value = (long) dataSnapshot.getValue();
+                dataSnapshot.getRef().setValue(++value);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private boolean containsMarker(String key) {
@@ -138,5 +167,9 @@ public class SavedMarkerData {
 
         for(int i = 0; i < markers.size(); i++)
             myPlacesIndexMapping.put(markers.get(i).key, i);
+    }
+
+    public void reinitateSingleton() {
+        instance = null;
     }
 }

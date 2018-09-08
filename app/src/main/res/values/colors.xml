@@ -16,5 +16,7 @@
     <color name="markerTravel">#344771</color>
     <color name="markerNature">#175b2a</color>
     <color name="markerAvoid">#73201e</color>
+    <color name="markerFood">#834312</color>
+    <color name="markerMusic">#531892</color>
     <color name="marker">#276680</color>
 </resources>

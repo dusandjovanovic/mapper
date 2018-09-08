@@ -2,14 +2,10 @@ package com.dushan.dev.mapper.Activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcel;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -23,9 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dushan.dev.mapper.Adapters.SimpleListAdapter;
 import com.dushan.dev.mapper.Data.LocationData;
@@ -34,11 +28,7 @@ import com.dushan.dev.mapper.Data.User;
 import com.dushan.dev.mapper.Data.UserData;
 import com.dushan.dev.mapper.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class FriendsActivity extends AppCompatActivity
@@ -56,7 +46,6 @@ public class FriendsActivity extends AppCompatActivity
     private FloatingActionButton friendsAddFriendButton;
     private SimpleListAdapter mAdapter;
 
-    private ArrayList<User> modelList = new ArrayList<>();
     private SocialData socialData;
 
     @Override
@@ -103,7 +92,7 @@ public class FriendsActivity extends AppCompatActivity
             activityIntent.putExtra("latitude", userData.getUser().getLatitude());
             activityIntent.putExtra("longitude", userData.getUser().getLongitude());
             activityIntent.putExtra("about", userData.getUser().getAbout());
-            activityIntent.putExtra("reach", userData.getUser().getReach());
+            activityIntent.putExtra("reachImpact", userData.getUser().getReachImpact());
             startActivity(activityIntent);
             return true;
         }
@@ -198,9 +187,7 @@ public class FriendsActivity extends AppCompatActivity
     }
 
     private void setAdapter() {
-        modelList.add(userData.getUser());
-
-        mAdapter = new SimpleListAdapter(FriendsActivity.this, modelList);
+        mAdapter = new SimpleListAdapter(FriendsActivity.this, socialData.getSocialFriends());
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -214,14 +201,14 @@ public class FriendsActivity extends AppCompatActivity
             @Override
             public void onItemClick(View view, int position, User model) {
                 Intent activityIntent = new Intent(FriendsActivity.this, AccountActivity.class);
-                activityIntent.putExtra("name", modelList.get(position).getName());
-                activityIntent.putExtra("lastName", modelList.get(position).getLastName());
-                activityIntent.putExtra("phone", modelList.get(position).getPhoneNumber());
-                activityIntent.putExtra("email", modelList.get(position).getEmail());
-                activityIntent.putExtra("latitude", modelList.get(position).getLatitude());
-                activityIntent.putExtra("longitude", modelList.get(position).getLongitude());
-                activityIntent.putExtra("about", modelList.get(position).getAbout());
-                activityIntent.putExtra("reach", modelList.get(position).getReach());
+                activityIntent.putExtra("name", socialData.getSocialFriends().get(position).getName());
+                activityIntent.putExtra("lastName", socialData.getSocialFriends().get(position).getLastName());
+                activityIntent.putExtra("phone", socialData.getSocialFriends().get(position).getPhoneNumber());
+                activityIntent.putExtra("email", socialData.getSocialFriends().get(position).getEmail());
+                activityIntent.putExtra("latitude", socialData.getSocialFriends().get(position).getLatitude());
+                activityIntent.putExtra("longitude", socialData.getSocialFriends().get(position).getLongitude());
+                activityIntent.putExtra("about", socialData.getSocialFriends().get(position).getAbout());
+                activityIntent.putExtra("reachImpact", socialData.getSocialFriends().get(position).getReachImpact());
                 startActivity(activityIntent);
             }
         });

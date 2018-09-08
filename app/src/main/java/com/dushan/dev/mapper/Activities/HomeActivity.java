@@ -9,18 +9,18 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.dushan.dev.mapper.Adapters.MarkersAdapter;
@@ -30,17 +30,12 @@ import com.dushan.dev.mapper.Data.MarkerData;
 import com.dushan.dev.mapper.Data.MergedData;
 import com.dushan.dev.mapper.Data.SavedMarkerData;
 import com.dushan.dev.mapper.Data.SocialData;
-import com.dushan.dev.mapper.Data.User;
 import com.dushan.dev.mapper.Data.UserData;
 import com.dushan.dev.mapper.Interfaces.ClickListener;
 import com.dushan.dev.mapper.R;
 import com.dushan.dev.mapper.Services.LocationService;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -64,8 +59,12 @@ public class HomeActivity extends AppCompatActivity
     private String email;
     private boolean backgroundService;
 
+    private LocationData locationData;
+    private MarkerData markerData;
     private SavedMarkerData savedData;
     private MergedData mergedData;
+    private UserData userData;
+    private SocialData socialData;
 
     private FirebaseAuth mAuth;
 
@@ -78,8 +77,13 @@ public class HomeActivity extends AppCompatActivity
         userId = mAuth.getCurrentUser().getUid();
         email = mAuth.getCurrentUser().getEmail();
 
+        locationData = LocationData.getInstance(userId);
+        userData = UserData.getInstance(userId);
+        markerData = MarkerData.getInstance(userId);
+        socialData = SocialData.getInstance(userId, getApplicationContext());
         savedData = SavedMarkerData.getInstance(userId);
         mergedData = MergedData.getInstance(userId, getApplicationContext());
+
         sharedPref = getSharedPreferences("mapper", MODE_PRIVATE);
         if (!sharedPref.contains("backgroundService")) {
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -113,6 +117,10 @@ public class HomeActivity extends AppCompatActivity
 
         selectedTab = RECENT_TAB;
         connectViews();
+
+        // debugging backend api calls
+        // socialData.sendUserRequest("lm57cclCT5QleqxeTOQnESDPtdg2");
+        // socialData.acceptUserRequest("5UF94tC3hXg23JqA5LLJ2xds8ty2");
     }
 
     @SuppressLint("MissingPermission")
@@ -149,18 +157,24 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.homeMenuSignOut) {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.clear();
             editor.commit();
+
+            locationData.reinitateSingleton();
+            userData.reinitateSingleton();
+            markerData.reinitateSingleton();
+            socialData.reinitateSingleton();
+            savedData.reinitateSingleton();
+            mergedData.reinitateSingleton();
 
             mAuth.signOut();
             Intent homeActivityIntent = new Intent(HomeActivity.this, HomePageActivity.class);
             startActivity(homeActivityIntent);
             return true;
         }
-        else if (id == R.id.homeMenuSearch) {
+        else if (id == R.id.homeMenuMap) {
             Intent activityIntent = new Intent(HomeActivity.this, MapsActivity.class);
             startActivity(activityIntent);
             return true;
@@ -252,6 +266,7 @@ public class HomeActivity extends AppCompatActivity
                     markerActivity.putExtra("latitude", mergedData.getMarkers().get(position).getLatitude());
                     markerActivity.putExtra("longitude", mergedData.getMarkers().get(position).getLongitude());
                     markerActivity.putExtra("dateTime", mergedData.getMarkers().get(position).getDateTime());
+                    markerActivity.putExtra("authorKey", mergedData.getMarkers().get(position).getAuthorKey());
                     markerActivity.putExtra("markerKey", mergedData.getMarkers().get(position).getKey());
                 }
                 else {
@@ -264,6 +279,7 @@ public class HomeActivity extends AppCompatActivity
                     markerActivity.putExtra("latitude", savedData.getMarkers().get(position).getLatitude());
                     markerActivity.putExtra("longitude", savedData.getMarkers().get(position).getLongitude());
                     markerActivity.putExtra("dateTime", savedData.getMarkers().get(position).getDateTime());
+                    markerActivity.putExtra("authorKey", savedData.getMarkers().get(position).getAuthorKey());
                     markerActivity.putExtra("markerKey", savedData.getMarkers().get(position).getKey());
                 }
                 startActivity(markerActivity);

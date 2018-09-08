@@ -8,31 +8,32 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.Toast;
-import com.dushan.dev.mapper.Data.MarkerData;
-import com.dushan.dev.mapper.Interfaces.GlideApp;
+
 import com.dushan.dev.mapper.R;
 import com.dushan.dev.mapper.Services.CloudUploadService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
 
 public class NewMarkerActivity extends AppCompatActivity {
     private final int MARKER_PHOTO = 0;
-    private final int MARKER_VIDEO = 0;
+    private final int MARKER_PHOTO_CAPTURE = 1;
+    private final int MARKER_VIDEO = 2;
     private int mode;
 
     Button newMarkerNextButton, newMarkerBrowseCaptureButton;
@@ -41,13 +42,15 @@ public class NewMarkerActivity extends AppCompatActivity {
 
     private static final String TAG = "NEW_MARKER_ACTIVITY";
     private static final int RC_TAKE_PICTURE = 101;
-    private static final int RC_TAKE_VIDEO = 102;
+    private static final int RC_CAPTURE_PICTURE = 102;
+    private static final int RC_TAKE_VIDEO = 103;
 
     private static final String KEY_FILE_URI = "key_file_uri";
     private static final String KEY_DOWNLOAD_URL = "key_download_url";
 
     private BroadcastReceiver mBroadcastReceiver;
     private Uri mDownloadUrl = null;
+    private Uri mCapturedUri = null;
     private Uri mFileUri = null;
 
     private FusedLocationProviderClient mFusedLocationClient;
@@ -119,7 +122,6 @@ public class NewMarkerActivity extends AppCompatActivity {
         if (requestCode == RC_TAKE_PICTURE) {
             if (resultCode == RESULT_OK) {
                 mFileUri = data.getData();
-
                 if (mFileUri != null) {
                     uploadFromUri(mFileUri);
                 } else {
@@ -129,10 +131,19 @@ public class NewMarkerActivity extends AppCompatActivity {
                 Toast.makeText(this, "Taking picture failed.", Toast.LENGTH_SHORT).show();
             }
         }
+        else if (requestCode == RC_CAPTURE_PICTURE) {
+            if (resultCode == RESULT_OK) {
+                mFileUri = mCapturedUri;
+                if (mFileUri != null) {
+                    uploadFromUri(mFileUri);
+                } else {
+                    Log.w(TAG, "File URI is null");
+                }
+            }
+        }
         else if (requestCode == RC_TAKE_VIDEO) {
             if (resultCode == RESULT_OK) {
                 mFileUri = data.getData();
-
                 if (mFileUri != null) {
                     uploadFromUri(mFileUri);
                 } else {
@@ -184,6 +195,14 @@ public class NewMarkerActivity extends AppCompatActivity {
         startActivityForResult(intent, RC_TAKE_PICTURE);
     }
 
+    private void capturePhotoCamera() {
+        mCapturedUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(),"fname_" +
+                String.valueOf(System.currentTimeMillis()) + ".jpg"));
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedUri);
+        startActivityForResult(intent, RC_CAPTURE_PICTURE);
+    }
+
     private void captureVideo() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType("video/*");
@@ -225,6 +244,9 @@ public class NewMarkerActivity extends AppCompatActivity {
                 if (mode == MARKER_PHOTO) {
                     capturePhoto();
                 }
+                else if (mode == MARKER_PHOTO_CAPTURE) {
+                    capturePhotoCamera();
+                }
                 else
                     captureVideo();
             }
@@ -253,9 +275,9 @@ public class NewMarkerActivity extends AppCompatActivity {
                 if (checked)
                     mode = MARKER_PHOTO;
                     break;
-            case R.id.newMarkerVideoRadio:
+            case R.id.newMarkerPhotoCameraRadio:
                 if (checked)
-                    mode =MARKER_VIDEO;
+                    mode = MARKER_PHOTO_CAPTURE;
                     break;
             default:
                     break;

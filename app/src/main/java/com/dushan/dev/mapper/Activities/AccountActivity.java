@@ -2,8 +2,6 @@ package com.dushan.dev.mapper.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -11,15 +9,14 @@ import android.widget.TextView;
 
 import com.dushan.dev.mapper.R;
 
-import java.text.DecimalFormat;
 import java.util.Objects;
 
 public class AccountActivity extends AppCompatActivity {
 
-    private TextView accountName, accountLastName, accountPhone, accountEmail, accountLocation, accountAbout;
+    private TextView accountName, accountLastName, accountPhone, accountEmail, accountLocation, accountAbout, accountReachImpact;
     private String name, lastName, phone, email, about;
     private double latitude, longitude;
-    private int reach;
+    private long reachImpact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +33,8 @@ public class AccountActivity extends AppCompatActivity {
         email = extras.getString("email");
         latitude = extras.getDouble("latitude", 0);
         longitude = extras.getDouble("longitude", 0);
+        reachImpact = extras.getLong("reachImpact", 0);
         about = extras.getString("about");
-        reach = extras.getInt("reach", 0);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         connectViews();
@@ -51,6 +48,7 @@ public class AccountActivity extends AppCompatActivity {
         accountEmail = findViewById(R.id.accountEmail);
         accountLocation = findViewById(R.id.accountLocation);
         accountAbout = findViewById(R.id.accountAbout);
+        accountReachImpact = findViewById(R.id.accountReachImpact);
     }
 
     private void initiateActivity() {
@@ -58,8 +56,8 @@ public class AccountActivity extends AppCompatActivity {
         accountLastName.setText(lastName);
         accountPhone.setText(phone);
         accountEmail.setText(email);
-        accountLocation.setText(new DecimalFormat(".## ").format(latitude) + "/ " + new DecimalFormat(".##").format(longitude));
         accountAbout.setText(about);
+        accountReachImpact.setText("User has Reach impact " + String.valueOf(reachImpact));
         accountLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -17,7 +17,7 @@ public class User {
     private String phoneNumber;
     private String email;
     private String image;
-    private ArrayList<Long> reach;
+    private long reachImpact;
 
     private double latitude;
     private double longitude;
@@ -25,7 +25,7 @@ public class User {
     @Exclude
     public String key;
 
-    public User() {}
+    public User() { }
 
     public User(String email, String name, String lastName, String about, String phoneNumber, Uri image) {
         this.email = email;
@@ -34,13 +34,9 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.about = about;
         this.image = image.toString();
-        this.reach = new ArrayList<Long>();
-        latitude = 0.0;
-        longitude = 0.0;
-    }
-
-    public void impactReach() {
-        this.reach.add(System.currentTimeMillis());
+        this.reachImpact = 0;
+        this.latitude = 0.0;
+        this.longitude = 0.0;
     }
 
     public String getName() {
@@ -88,10 +84,6 @@ public class User {
 
     public void setEmail(String email) { this.email = email; }
 
-    public ArrayList<Long> getReach() { return reach; }
-
-    public void setReach(ArrayList<Long> reach) { this.reach = reach; }
-
     public double getLatitude() {
         return latitude;
     }
@@ -114,5 +106,14 @@ public class User {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+
+    public long getReachImpact() {
+        return reachImpact;
+    }
+
+    public void setReachImpact(long reachImpact) {
+        this.reachImpact = reachImpact;
     }
 }

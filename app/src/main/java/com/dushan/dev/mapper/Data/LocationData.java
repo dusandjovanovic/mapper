@@ -1,8 +1,5 @@
 package com.dushan.dev.mapper.Data;
 
-import android.net.Uri;
-
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -15,7 +12,7 @@ public class LocationData {
     private static String FIREBASE_LONGITUDE = "longitude";
     private static DatabaseReference database;
 
-    public static LocationData instance = null;
+    private static LocationData instance = null;
 
     private static LocationUpdatedEventListener updateListener;
 
@@ -90,5 +87,9 @@ public class LocationData {
     }
     public double getLongitude() {
         return location.getLongitude();
+    }
+
+    public void reinitateSingleton() {
+        instance = null;
     }
 }

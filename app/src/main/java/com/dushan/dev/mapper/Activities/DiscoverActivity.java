@@ -1,43 +1,68 @@
 package com.dushan.dev.mapper.Activities;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.dushan.dev.mapper.Adapters.MarkersAdapter;
 import com.dushan.dev.mapper.Data.Marker;
-import com.dushan.dev.mapper.Data.MarkerData;
+import com.dushan.dev.mapper.Data.MergedData;
 import com.dushan.dev.mapper.Data.UserData;
 import com.dushan.dev.mapper.Interfaces.ClickListener;
 import com.dushan.dev.mapper.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class DiscoverActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
+
+    static final int PERMISSION_ACCESS_FINE_LOCATION = 1;
+    static final String TAG = "DISCOVER_ACTIVITY";
 
     private SharedPreferences sharedPref;
-
     private Toolbar toolbar;
     private RecyclerView discoverRecycler;
     private MarkersAdapter markersAdapter;
 
-    private MarkerData markerData;
+    private MergedData markerData;
     private UserData userData;
 
     private String userId;
@@ -45,15 +70,26 @@ public class DiscoverActivity extends AppCompatActivity
 
     private FirebaseAuth mAuth;
 
+    private GoogleMap mMap;
+    private HeatmapTileProvider mProvider;
+    private TileOverlay mOverlay;
+
+    private FusedLocationProviderClient mFusedLocationClient;
+    private LatLng lastKnowLocation = new LatLng(43.3203158, 21.9170784);;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discover);
 
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.discoverMap);
+        mapFragment.getMapAsync(this);
+
         mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getCurrentUser().getUid();
         email = mAuth.getCurrentUser().getEmail();
-        markerData = MarkerData.getInstance(userId);
+        markerData = MergedData.getInstance(userId, getApplicationContext());
         userData = UserData.getInstance(userId);
         sharedPref = getSharedPreferences("mapper", MODE_PRIVATE);
 
@@ -65,6 +101,26 @@ public class DiscoverActivity extends AppCompatActivity
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            lastKnowLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                            CameraPosition cameraPosition = new CameraPosition.Builder()
+                                    .target(lastKnowLocation)
+                                    .zoom(13)
+                                    .build();
+                            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                        }
+                    }
+                });
 
         connectViews();
     }
@@ -159,11 +215,58 @@ public class DiscoverActivity extends AppCompatActivity
     }
 
     private void setupListeners(){
-        markerData.setEventListener(new MarkerData.ListUpdatedEventListener() {
+        markerData.setListener(new MergedData.MergedUpdatedEventListener() {
             @Override
-            public void onListUpdated() {
+            public void onUpdated() {
                 initiateRecyclerView(markerData.getMarkers());
             }
         });
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        else{
+            mMap.setMyLocationEnabled(true);
+            initiateHeatMap();
+        }
+
+        try {
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.style_json));
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can't find style. Error: ", e);
+        }
+    }
+
+    private void initiateHeatMap() {
+        ArrayList<LatLng> heatMap = new ArrayList<LatLng>();
+        for (Marker marker: markerData.recentMarkers())
+            heatMap.add(new LatLng(marker.getLatitude(), marker.getLongitude()));
+
+        mProvider = new HeatmapTileProvider.Builder()
+                .data(heatMap)
+                .radius(40)
+                .build();
+
+        mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+    }
+
+    private BitmapDescriptor getMarkerIconFromDrawable(Drawable drawable) {
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 }

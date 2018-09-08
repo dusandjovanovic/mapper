@@ -10,5 +10,71 @@
     <include layout="@layout/view_toolbar"
         android:id="@+id/searchToolbar" />
 
+    <LinearLayout
+        android:padding="8dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true">
+        <ImageButton
+            android:id="@+id/searchButton"
+            android:background="?android:colorBackground"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/mainTextColor"
+            android:src="@drawable/ic_search"
+            android:layout_weight="1"/>
+
+        <EditText
+            android:id="@+id/searchKeywordsEditText"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:hint="@string/keywords"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="7"/>
+
+        <Spinner
+            android:id="@+id/searchSpinner"
+            android:layout_gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:padding="8dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <SeekBar
+            android:id="@+id/searchDiameterSeekBar"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="14"
+            />
+
+        <TextView
+            android:id="@+id/searchDiameterText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:textColor="@color/tabHighlightColor"
+            android:text="0"/>
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/searchRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"/>
 
 </LinearLayout>

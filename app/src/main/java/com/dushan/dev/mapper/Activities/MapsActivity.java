@@ -2,32 +2,28 @@ package com.dushan.dev.mapper.Activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.dushan.dev.mapper.Data.Marker;
-import com.dushan.dev.mapper.Data.MarkerData;
 import com.dushan.dev.mapper.Data.MergedData;
+import com.dushan.dev.mapper.Data.SocialData;
+import com.dushan.dev.mapper.Data.User;
 import com.dushan.dev.mapper.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -39,10 +35,11 @@ import java.util.Objects;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     static final int PERMISSION_ACCESS_FINE_LOCATION = 1;
-    static final String TAG = "MAPS_FRAGMENT";
+    static final String TAG = "MAPS_FRAGMENT_ACTIVITY";
 
     public static final int SHOW_MAP = 0;
     public static final int CENTER_PLACE_ON_MAP = 1;
+    private boolean searchView;
     private int state = 0;
 
     private GoogleMap mMap;
@@ -51,20 +48,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FirebaseAuth mAuth;
     private String userId;
     private MergedData mergedData;
+    private SocialData socialData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         mAuth = FirebaseAuth.getInstance();
         userId = mAuth.getCurrentUser().getUid();
+        socialData = SocialData.getInstance(userId, getApplicationContext());
         mergedData = MergedData.getInstance(userId, getApplicationContext());
         Intent intent = getIntent();
 
+        searchView = intent.getBooleanExtra("search", false);
         double latitude = intent.getDoubleExtra("latitude", 0);
         double longitude = intent.getDoubleExtra("longitude", 0);
         if (latitude != 0) {
@@ -130,20 +131,44 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void initiateMarkers() {
-        if (currentLocation != null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        if (searchView) {
+            for (Marker marker: mergedData.getFilteredMarkers()) {
+                LatLng markerLoation = new LatLng(marker.getLatitude(), marker.getLongitude());
+                Drawable circleDrawable = getResources().getDrawable(R.drawable.ic_location_marker_place);
+                BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
+                mMap.addMarker(new MarkerOptions()
+                        .position(markerLoation)
+                        .snippet(marker.getDescription())
+                        .title(marker.getName())
+                        .icon(markerIcon)
+                );
+            }
         }
-        for (Marker marker: mergedData.getMarkers()) {
-            LatLng markerLoation = new LatLng(marker.getLatitude(), marker.getLongitude());
-            Drawable circleDrawable = getResources().getDrawable(R.drawable.ic_location_marker_place);
-            BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
-            mMap.addMarker(new MarkerOptions()
-                    .position(markerLoation)
-                    .snippet(marker.getDescription())
-                    .title(marker.getName())
-                    .icon(markerIcon)
-            );
+        else {
+            for (Marker marker: mergedData.getMarkers()) {
+                LatLng markerLoation = new LatLng(marker.getLatitude(), marker.getLongitude());
+                Drawable circleDrawable = getResources().getDrawable(R.drawable.ic_location_marker_place);
+                BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
+                mMap.addMarker(new MarkerOptions()
+                        .position(markerLoation)
+                        .snippet(marker.getDescription())
+                        .title(marker.getName())
+                        .icon(markerIcon)
+                );
+            }
+            for (User user: socialData.getSocialFriends()) {
+                LatLng markerLoation = new LatLng(user.getLatitude(), user.getLongitude());
+                Drawable circleDrawable = getResources().getDrawable(R.drawable.ic_location_marker_person);
+                BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
+                mMap.addMarker(new MarkerOptions()
+                        .position(markerLoation)
+                        .title(user.getName())
+                        .icon(markerIcon)
+                );
+            }
+        }
+        if (currentLocation != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
         }
     }
 
