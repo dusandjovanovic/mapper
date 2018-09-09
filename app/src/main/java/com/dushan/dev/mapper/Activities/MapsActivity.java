@@ -156,7 +156,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         else {
             for (Marker marker: mergedData.getMarkers()) {
                 LatLng markerLoation = new LatLng(marker.getLatitude(), marker.getLongitude());
-                Drawable circleDrawable = getResources().getDrawable(R.drawable.ic_location_marker_place);
+                Drawable circleDrawable = null;
+                String markerKey = marker.getKey();
+                if (socialData.getVisitedMarkers().contains(markerKey))
+                    circleDrawable = getResources().getDrawable(R.drawable.ic_location_marker_visted);
+                else
+                    circleDrawable = getResources().getDrawable(R.drawable.ic_location_marker_place);
                 BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
                 mMap.addMarker(new MarkerOptions()
                         .position(markerLoation)

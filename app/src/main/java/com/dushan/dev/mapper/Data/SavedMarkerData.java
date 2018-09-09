@@ -1,13 +1,14 @@
 package com.dushan.dev.mapper.Data;
 
-import android.support.annotation.NonNull;
-
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -29,6 +30,7 @@ public class SavedMarkerData {
     private SavedMarkerData(String userID) {
         markers = new ArrayList<Marker>();
         myPlacesIndexMapping = new HashMap<String, Integer>();
+
         root = FirebaseDatabase.getInstance().getReference(FIREBASE_ROOT);
         database = FirebaseDatabase.getInstance().getReference("users/" + userID);
         database.child(FIREBASE_CHILD).addChildEventListener(childEventListener);
@@ -114,7 +116,6 @@ public class SavedMarkerData {
         }
     };
 
-
     public static SavedMarkerData getInstance(String userId) {
         if (instance == null)
             instance = new SavedMarkerData(userId);
@@ -135,24 +136,30 @@ public class SavedMarkerData {
         }
     }
 
-    private void impactMarkerReach(Marker marker) {
+    public void impactMarkerReach(Marker marker) {
         String dateTimeKey = database.push().getKey();
         root.child(marker.getAuthorKey())
                 .child(FIREBASE_CHILD_REACH).child(dateTimeKey).setValue(System.currentTimeMillis());
         root.child(marker.getAuthorKey())
-                .child(FIREBASE_CHILD_REACH_IMPACT).addListenerForSingleValueEvent(new ValueEventListener() {
+                .child(FIREBASE_CHILD_REACH_IMPACT).runTransaction(new Transaction.Handler() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                long value = (long) dataSnapshot.getValue();
-                dataSnapshot.getRef().setValue(++value);
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Long currentValue = mutableData.getValue(Long.class);
+                if (currentValue == null) {
+                    mutableData.setValue(1);
+                } else {
+                    mutableData.setValue(currentValue + 1);
+                }
+
+                return Transaction.success(mutableData);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            public void onComplete(
+                    DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                System.out.println("Transaction completed");
             }
         });
-
     }
 
     private boolean containsMarker(String key) {

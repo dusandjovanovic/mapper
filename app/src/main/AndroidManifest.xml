@@ -82,6 +82,10 @@
             android:name=".Services.BluetoothService"
             android:enabled="true"
             android:exported="true"></service>
+
+        <service android:name=".Threads.BluetoothReceiverService"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>

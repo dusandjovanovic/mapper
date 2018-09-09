@@ -20,11 +20,13 @@ public class SocialData {
     private static ArrayList<User> socialFriends;
     private static ArrayList<User> socialRequests;
     private static ArrayList<Marker> socialMarkers;
+    private static ArrayList<String> visitedMarkers;
 
     private static final String FIREBASE_ROOT = "users";
     private static final String FIREBASE_CHILD_REQUESTS = "requests";
     private static final String FIREBASE_CHILD_FRIENDS = "friends";
     private static final String FIREBASE_CHILD_MARKERS = "markers";
+    private static final String FIREBASE_CHILD_VISITED = "markersVisited";
     private static DatabaseReference database;
     private static DatabaseReference root;
 
@@ -33,10 +35,12 @@ public class SocialData {
     private static FriendsUpdatedEventListener friendsUpdatedListener;
     private static RequestsUpdatedEventListener requestsUpdatedListener;
     private static MarkersUpdatedEventListener markersUpdatedListener;
+    private static VisitedUpdatedEventListener visitedListener;
 
     private NotificationHandler notificationHandler;
     private Context context;
-    private FirebaseAuth mAuth;
+    private static FirebaseAuth mAuth;
+    private String userID;
 
     private SocialData(String userID, Context context) {
         social = new Social();
@@ -46,12 +50,16 @@ public class SocialData {
         database.child(FIREBASE_CHILD_REQUESTS).addListenerForSingleValueEvent(requestsValueEventListener);
         database.child(FIREBASE_CHILD_FRIENDS).addChildEventListener(friendsEventListener);
         database.child(FIREBASE_CHILD_FRIENDS).addListenerForSingleValueEvent(friendsValueEventListener);
+        database.child(FIREBASE_CHILD_VISITED).addChildEventListener(visitedEventListener);
+        database.child(FIREBASE_CHILD_VISITED).addListenerForSingleValueEvent(visitedValueEventListener);
         mAuth = FirebaseAuth.getInstance();
 
         socialRequests = new ArrayList<User>();
         socialFriends = new ArrayList<User>();
         socialMarkers = new ArrayList<Marker>();
+        visitedMarkers = new ArrayList<String>();
 
+        this.userID = userID;
         this.context = context;
         notificationHandler = NotificationHandler.getInstance(this.context);
     }
@@ -84,6 +92,14 @@ public class SocialData {
 
     public interface MarkersUpdatedEventListener {
         void onMarkersUpdated();
+    }
+
+    public void setVisitedListener(VisitedUpdatedEventListener listener) {
+        visitedListener = listener;
+    }
+
+    public interface VisitedUpdatedEventListener {
+        void onVisitedUpdated();
     }
 
     ValueEventListener friendsValueEventListener = new ValueEventListener() {
@@ -203,6 +219,69 @@ public class SocialData {
         });
     }
 
+    ValueEventListener visitedValueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            if(visitedListener != null)
+                visitedListener.onVisitedUpdated();
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+
+    ChildEventListener visitedEventListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            String delta = dataSnapshot.getValue(String.class);
+            if (!visitedMarkers.contains(delta))
+                visitedMarkers.add(delta);
+
+            if(visitedListener != null)
+                visitedListener.onVisitedUpdated();
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+            String delta = dataSnapshot.getValue(String.class);
+            if (visitedMarkers.contains(delta))
+                visitedMarkers.remove(delta);
+
+            if(visitedListener != null)
+                visitedListener.onVisitedUpdated();
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            return;
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            return;
+        }
+    };
+
+    public boolean visitedMarkerEvent(Marker marker) {
+        if (!visitedMarkers.contains(marker.getKey())) {
+            visitedMarkers.add(marker.getKey());
+            String visitedMarkerKey = database.push().getKey();
+            root.child(userID)
+                    .child(FIREBASE_CHILD_VISITED).child(visitedMarkerKey).setValue(marker.getKey());
+
+            SavedMarkerData.getInstance(userID).impactMarkerReach(marker);
+            return true;
+        }
+        return false;
+    }
+
     private void changeUserFriend(User userSnapshot) {
         for (int i = 0; i < socialFriends.size(); i++)
             if (socialFriends.get(i).getKey() == userSnapshot.getKey())
@@ -316,6 +395,14 @@ public class SocialData {
 
     public void setSocialMarkers(ArrayList<Marker> socialMarkers) {
         SocialData.socialMarkers = socialMarkers;
+    }
+
+    public static ArrayList<String> getVisitedMarkers() {
+        return visitedMarkers;
+    }
+
+    public static void setVisitedMarkers(ArrayList<String> visitedMarkers) {
+        SocialData.visitedMarkers = visitedMarkers;
     }
 
     public void reinitateSingleton() {

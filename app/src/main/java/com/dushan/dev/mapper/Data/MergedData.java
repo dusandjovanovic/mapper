@@ -88,7 +88,7 @@ public class MergedData {
         markerLocation.setLatitude(marker.getLatitude());
         markerLocation.setLongitude(marker.getLongitude());
 
-        if (distanceTo(marker.getLatitude(), marker.getLongitude(), currentLocation.latitude, currentLocation.longitude)
+        if (distanceBetween(marker.getLatitude(), marker.getLongitude(), currentLocation.latitude, currentLocation.longitude)
                 > (double)filterDiameter)
             return false;
 
@@ -105,14 +105,18 @@ public class MergedData {
         return false;
     }
 
-    private double distanceTo(final double lat1, final double lon1, final double lat2, final double lon2) {
-        double R = 6371000f; // Radius of the earth in m
-        double dLat = (lat1 - lat2) * Math.PI / 180f;
-        double dLon = (lon1 - lon2) * Math.PI / 180f;
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180f) * Math.cos(lat2 * Math.PI / 180f) * Math.sin(dLon/2) * Math.sin(dLon/2);
-        double c = 2f * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        double d = R * c;
-        return d/1000;
+    private double distanceBetween(double lat_a, double lng_a, double lat_b, double lng_b ) {
+        double earthRadius = 3958.75;
+        double latDiff = Math.toRadians(lat_b-lat_a);
+        double lngDiff = Math.toRadians(lng_b-lng_a);
+        double a = Math.sin(latDiff /2) * Math.sin(latDiff /2) +
+                Math.cos(Math.toRadians(lat_a)) * Math.cos(Math.toRadians(lat_b)) *
+                        Math.sin(lngDiff /2) * Math.sin(lngDiff /2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double distance = earthRadius * c;
+
+        double meterConversion = 1609;
+        return distance * meterConversion;
     }
 
     public void setListener(MergedUpdatedEventListener listener) {

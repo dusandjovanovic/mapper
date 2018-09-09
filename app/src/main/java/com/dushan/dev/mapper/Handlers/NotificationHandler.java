@@ -1,11 +1,16 @@
 package com.dushan.dev.mapper.Handlers;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
+import android.service.notification.StatusBarNotification;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 
 import com.dushan.dev.mapper.Activities.HomeActivity;
@@ -26,31 +31,44 @@ public class NotificationHandler {
         return nHandler;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void createSimpleNotification(Context context, String message) {
+        int notificationId = 11;
+        StatusBarNotification[] notifications = mNotificationManager.getActiveNotifications();
+        for (StatusBarNotification notification : notifications)
+            if (notification.getId() == notificationId)
+                return;
+
         Intent intent = new Intent(context, HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        Uri audio = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        long[] vibrationRatio = {500,1000};
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentTitle("Mapper")
                 .setContentText(message)
                 .setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setVibrate(vibrationRatio)
+                .setSound(audio)
+                .setPriority(Notification.PRIORITY_MAX)
+                .setChannelId(CHANNEL_ID);
 
-        mNotificationManager.notify(11, mBuilder.build());
+        mNotificationManager.notify(notificationId, mBuilder.build());
     }
 
     private static void createNotificationChannel(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Mapper";
-            String description = "Mapper_app";
+            CharSequence name = "mapper";
+            String description = "mapper_app";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
             mNotificationManager = (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.createNotificationChannel(channel);
         }
-        mNotificationManager = (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        else
+            mNotificationManager = (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
     }
 }

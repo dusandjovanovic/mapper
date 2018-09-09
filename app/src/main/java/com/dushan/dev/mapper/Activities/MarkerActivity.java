@@ -27,6 +27,7 @@ import com.dushan.dev.mapper.R;
 import com.dushan.dev.mapper.Services.CloudDownloadService;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Date;
 import java.util.Objects;
 
 public class MarkerActivity extends AppCompatActivity {
@@ -35,7 +36,7 @@ public class MarkerActivity extends AppCompatActivity {
     private static final String KEY_FILE_URI = "key_download_url";
     private static final String KEY_DOWNLOAD_URL = "key_download_url";
 
-    private TextView markerNameText, markerAuthorText, markerDescriptionText, markerAddress, markerCategoryText;
+    private TextView markerNameText, markerAuthorText, markerDescriptionText, markerAddress, markerCategoryText, markerDateTimeText;
     private ImageView markerToolbarImage;
     private FloatingActionButton markerAddFavoriteButton;
     private Button markerGetDirectionsButton, markerVideoViewButton;
@@ -122,6 +123,7 @@ public class MarkerActivity extends AppCompatActivity {
         markerDescriptionText = findViewById(R.id.markerDescriptionText);
         markerAddress = findViewById(R.id.markerAddressText);
         markerCategoryText = findViewById(R.id.markerCategoryText);
+        markerDateTimeText = findViewById(R.id.markerDateTimeText);
         markerAddFavoriteButton = findViewById(R.id.markerAddFavoriteButton);
         markerGetDirectionsButton= findViewById(R.id.markerGetDirectionsButton);
         markerToolbarImage = findViewById(R.id.markerToolbarImage);
@@ -138,6 +140,7 @@ public class MarkerActivity extends AppCompatActivity {
         markerDescriptionText.setText(marker.getDescription());
         markerAddress.setText(marker.getAddress());
         markerCategoryText.setText(marker.getCategory());
+        markerDateTimeText.setText(new Date(marker.getDateTime() * 1000).toString());
         Glide.with(this).load(marker.getImageURL()).into(markerToolbarImage);
     }
 

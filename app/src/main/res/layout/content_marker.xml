@@ -129,10 +129,44 @@
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardDateTime"
+            android:layout_below="@id/cardCategory"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            >
+
+            <RelativeLayout
+                android:layout_margin="10dp"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:id="@+id/cardDateTimeHolder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/date_added"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/markerDateTimeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/cardDateTimeHolder"
+                    android:textSize="15sp"
+                    />
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
         <Button
             android:id="@+id/markerGetDirectionsButton"
             android:layout_width="match_parent"
-            android:layout_below="@id/cardCategory"
+            android:layout_below="@id/cardDateTime"
             android:layout_height="wrap_content"
             android:background="@drawable/button_bg_blue"
             android:text="@string/get_directions"

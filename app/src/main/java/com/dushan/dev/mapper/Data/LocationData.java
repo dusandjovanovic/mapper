@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 
 import com.dushan.dev.mapper.Handlers.NotificationHandler;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -56,8 +57,10 @@ public class LocationData {
                 locationSnapshot = (Double)dataSnapshot.getValue();
             }
             location.setLatitude(locationSnapshot);
+
+            markersNearby();
             if (applicationBackground() && usersNearby())
-                notificationHandler.createSimpleNotification(context, "There is someone nearby.");
+                notificationHandler.createSimpleNotification(context, "There is someone nearby. Tap to open application.");
             if(updateListener != null)
                 updateListener.onLocationUpdated();
         }
@@ -78,8 +81,10 @@ public class LocationData {
                 locationSnapshot = (Double)dataSnapshot.getValue();
             }
             location.setLongitude(locationSnapshot);
+
+            markersNearby();
             if (applicationBackground() && usersNearby())
-                notificationHandler.createSimpleNotification(context, "There is someone nearby.");
+                notificationHandler.createSimpleNotification(context, "There is someone nearby. Tap to open application.");
             if(updateListener != null)
                 updateListener.onLocationUpdated();
         }
@@ -92,9 +97,15 @@ public class LocationData {
 
     private boolean usersNearby() {
         for (User user: socialData.getSocialFriends())
-            if (distanceTo(location.getLatitude(), location.getLongitude(), user.getLatitude(), user.getLongitude()) <= 25)
+            if (distanceBetween(location.getLatitude(), location.getLongitude(), user.getLatitude(), user.getLongitude()) <= 30)
                 return true;
         return false;
+    }
+
+    private void markersNearby() {
+        for (Marker marker: socialData.getSocialMarkers())
+            if (distanceBetween(location.getLatitude(), location.getLongitude(), marker.getLatitude(), marker.getLongitude()) <= 50)
+                socialData.visitedMarkerEvent(marker);
     }
 
     private boolean applicationBackground() {
@@ -103,14 +114,18 @@ public class LocationData {
         return !(appProcessInfo.importance == IMPORTANCE_FOREGROUND || appProcessInfo.importance == IMPORTANCE_VISIBLE);
     }
 
-    private double distanceTo(final double lat1, final double lon1, final double lat2, final double lon2) {
-        double R = 6371000f; // Radius of the earth in m
-        double dLat = (lat1 - lat2) * Math.PI / 180f;
-        double dLon = (lon1 - lon2) * Math.PI / 180f;
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180f) * Math.cos(lat2 * Math.PI / 180f) * Math.sin(dLon/2) * Math.sin(dLon/2);
-        double c = 2f * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        double d = R * c;
-        return d/1000;
+    private double distanceBetween(double lat_a, double lng_a, double lat_b, double lng_b ) {
+        double earthRadius = 3958.75;
+        double latDiff = Math.toRadians(lat_b-lat_a);
+        double lngDiff = Math.toRadians(lng_b-lng_a);
+        double a = Math.sin(latDiff /2) * Math.sin(latDiff /2) +
+                Math.cos(Math.toRadians(lat_a)) * Math.cos(Math.toRadians(lat_b)) *
+                        Math.sin(lngDiff /2) * Math.sin(lngDiff /2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double distance = earthRadius * c;
+
+        double meterConversion = 1609;
+        return distance * meterConversion;
     }
 
     public void changeLocation(double latitude, double longitude) {
