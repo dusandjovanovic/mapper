@@ -75,7 +75,7 @@ public class SocialData {
     }
 
     public interface FriendsUpdatedEventListener {
-        void onFriendsUpdated();
+        void onFriendsUpdated(User userUpdated);
     }
 
     public void setRequestsListener(RequestsUpdatedEventListener listener) {
@@ -99,14 +99,14 @@ public class SocialData {
     }
 
     public interface VisitedUpdatedEventListener {
-        void onVisitedUpdated();
+        void onVisitedUpdated(String markerVisited);
     }
 
     ValueEventListener friendsValueEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             if(friendsUpdatedListener != null)
-                friendsUpdatedListener.onFriendsUpdated();
+                friendsUpdatedListener.onFriendsUpdated(null);
         }
 
         @Override
@@ -121,7 +121,7 @@ public class SocialData {
             String delta = dataSnapshot.getKey();
             addUserFriend(delta);
             if(friendsUpdatedListener != null)
-                friendsUpdatedListener.onFriendsUpdated();
+                friendsUpdatedListener.onFriendsUpdated(null);
         }
 
         @Override
@@ -208,7 +208,7 @@ public class SocialData {
                 }
 
                 if(friendsUpdatedListener != null)
-                    friendsUpdatedListener.onFriendsUpdated();
+                    friendsUpdatedListener.onFriendsUpdated(userSnapshot);
             }
 
             @Override
@@ -222,7 +222,7 @@ public class SocialData {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             if(visitedListener != null)
-                visitedListener.onVisitedUpdated();
+                visitedListener.onVisitedUpdated(null);
         }
 
         @Override
@@ -239,7 +239,7 @@ public class SocialData {
                 visitedMarkers.add(delta);
 
             if(visitedListener != null)
-                visitedListener.onVisitedUpdated();
+                visitedListener.onVisitedUpdated(delta);
         }
 
         @Override
@@ -254,7 +254,7 @@ public class SocialData {
                 visitedMarkers.remove(delta);
 
             if(visitedListener != null)
-                visitedListener.onVisitedUpdated();
+                visitedListener.onVisitedUpdated(delta);
         }
 
         @Override
@@ -337,7 +337,7 @@ public class SocialData {
                 }
 
                 if(friendsUpdatedListener != null)
-                    friendsUpdatedListener.onFriendsUpdated();
+                    friendsUpdatedListener.onFriendsUpdated(userSnapshot);
             }
 
             @Override
@@ -404,7 +404,7 @@ public class SocialData {
         SocialData.visitedMarkers = visitedMarkers;
     }
 
-    public void reinitateSingleton() {
+    public void reinitiateSingleton() {
         instance = null;
     }
 }

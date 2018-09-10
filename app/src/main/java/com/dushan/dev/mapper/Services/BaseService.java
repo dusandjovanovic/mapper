@@ -2,10 +2,8 @@ package com.dushan.dev.mapper.Services;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -34,7 +32,6 @@ public abstract class BaseService extends Service {
         Log.d(TAG, "changeNumberOfTasks:" + mNumTasks + ":" + delta);
         mNumTasks += delta;
 
-        // If there are no tasks left, stop the service
         if (mNumTasks <= 0) {
             Log.d(TAG, "stopping");
             stopSelf();
@@ -42,7 +39,6 @@ public abstract class BaseService extends Service {
     }
 
     private void createDefaultChannel() {
-        // Since android Oreo notification channel is needed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 

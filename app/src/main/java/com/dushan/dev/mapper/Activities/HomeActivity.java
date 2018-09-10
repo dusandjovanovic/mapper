@@ -158,16 +158,15 @@ public class HomeActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.homeMenuSignOut) {
+            locationData.reinitiateSingleton();
+            userData.reinitiateSingleton();
+            markerData.reinitiateSingleton();
+            socialData.reinitiateSingleton();
+            savedData.reinitiateSingleton();
+            mergedData.reinitiateSingleton();
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.clear();
-            editor.commit();
-
-            locationData.reinitateSingleton();
-            userData.reinitateSingleton();
-            markerData.reinitateSingleton();
-            socialData.reinitateSingleton();
-            savedData.reinitateSingleton();
-            mergedData.reinitateSingleton();
+            editor.apply();
 
             mAuth.signOut();
             Intent homeActivityIntent = new Intent(HomeActivity.this, HomePageActivity.class);
@@ -224,11 +223,10 @@ public class HomeActivity extends AppCompatActivity
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
+        assert manager != null;
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE))
+            if (serviceClass.getName().equals(service.service.getClassName()))
                 return true;
-            }
-        }
         return false;
     }
 

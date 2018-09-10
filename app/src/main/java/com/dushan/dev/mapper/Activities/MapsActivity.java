@@ -39,6 +39,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -56,6 +57,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MergedData mergedData;
     private SocialData socialData;
     private StorageReference mStorageRef;
+
+    private HashMap<String, com.google.android.gms.maps.model.Marker> markersUsers;
+    private HashMap<String, com.google.android.gms.maps.model.Marker> markersMarkers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +124,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find style. Error: ", e);
         }
+
+        socialData.setFriendsListener(new SocialData.FriendsUpdatedEventListener() {
+            @Override
+            public void onFriendsUpdated(User userUpdated) {
+                if (userUpdated != null && markersUsers.containsKey(userUpdated.getKey())) {
+                    markersUsers.get(userUpdated.getKey())
+                            .setPosition(new LatLng(userUpdated.getLatitude(), userUpdated.getLongitude()));
+                }
+            }
+        });
+
+        socialData.setVisitedListener(new SocialData.VisitedUpdatedEventListener() {
+            @Override
+            public void onVisitedUpdated(String markerVisited) {
+                if (markerVisited != null && markersMarkers.containsKey(markerVisited))
+                    markersMarkers.get(markerVisited)
+                            .setIcon(getMarkerIconFromDrawable(getResources().getDrawable(R.drawable.ic_location_marker_visted)));
+            }
+        });
     }
 
     @SuppressLint("MissingPermission")
@@ -139,6 +162,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void initiateMarkers() {
+        markersUsers = new HashMap<>();
+        markersMarkers = new HashMap<>();
+
         mMap.setOnMarkerClickListener(this);
         if (searchView) {
             for (Marker marker: mergedData.getFilteredMarkers()) {
@@ -163,12 +189,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 else
                     circleDrawable = getResources().getDrawable(R.drawable.ic_location_marker_place);
                 BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
-                mMap.addMarker(new MarkerOptions()
+                markersMarkers.put(markerKey, mMap.addMarker(new MarkerOptions()
                         .position(markerLoation)
                         .snippet(marker.getDescription())
                         .title(marker.getName())
                         .icon(markerIcon)
-                );
+                ));
             }
             for (User user: socialData.getSocialFriends()) {
                 GlideApp.with(MapsActivity.this)
@@ -181,11 +207,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             @Override
                             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                 LatLng markerLoation = new LatLng(user.getLatitude(), user.getLongitude());
-                                com.google.android.gms.maps.model.Marker marker = mMap.addMarker(new MarkerOptions()
+                                markersUsers.put(user.getKey(), mMap.addMarker(new MarkerOptions()
                                         .icon(BitmapDescriptorFactory.fromBitmap(resource))
-                                        .position(markerLoation)
+                                        .position(markerLoation))
                                 );
-                                marker.setTag(user);
+                                markersUsers.get(user.getKey()).setTag(user);
                             }
                         });
             }

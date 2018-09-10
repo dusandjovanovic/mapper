@@ -184,6 +184,13 @@ public class FriendsActivity extends AppCompatActivity
                 startActivity(activityIntent);
             }
         });
+
+        socialData.setFriendsListener(new SocialData.FriendsUpdatedEventListener() {
+            @Override
+            public void onFriendsUpdated(User userUpdated) {
+                setAdapter();
+            }
+        });
     }
 
     private void setAdapter() {

@@ -102,7 +102,7 @@ public class UserData {
         UserData.userReach = userReach;
     }
 
-    public void reinitateSingleton() {
+    public void reinitiateSingleton() {
         instance = null;
     }
 }

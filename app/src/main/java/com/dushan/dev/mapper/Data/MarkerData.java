@@ -147,7 +147,7 @@ public class MarkerData {
             myPlacesIndexMapping.put(markers.get(i).key, i);
     }
 
-    public void reinitateSingleton() {
+    public void reinitiateSingleton() {
         instance = null;
     }
 }

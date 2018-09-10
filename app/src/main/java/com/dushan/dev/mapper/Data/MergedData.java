@@ -131,7 +131,7 @@ public class MergedData {
         MergedData.filteredMarkers = filteredMarkers;
     }
 
-    public void reinitateSingleton() {
+    public void reinitiateSingleton() {
         instance = null;
     }
 }

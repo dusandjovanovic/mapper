@@ -1,7 +1,7 @@
 # mapper
 Android location-based crowdsourcing application.
 
-### Architecure
+### Architecture
 #### Model-View-Controller
 * **model** - the data layer, responsible for managing the business logic and handling network and Firebase api
 * **view** - the view layer, a visualisation of the data from the model
@@ -9,13 +9,13 @@ Android location-based crowdsourcing application.
 
 #### Background services
 * `BaseService` which is abstract, provides progress identifier interface and notification provider
-* `CloudDownloadService` for uploading images/videos to Firebase cloud storage
-* `CloudUploadService` for downloading videos from Firebase since api doesn't provide streaming
+* `CloudDownloadService` for uploading images/videos to Firebase cloud storage (broadcast based)
+* `CloudUploadService` for downloading videos from Firebase since api doesn't provide streaming (broadcast based)
 * `LocationService` for location-awareness features such as updating db and notifying user about others nearby
 * `BluetoothReceiverService` for separately threaded Bluetooth receiver
 
 #### Firebase backend
-Consist of `realtime database` for managing user data. User data is bound to all authenticated users and includes attributes such as an email address and other less relevant data. Besides user data `markers`, `vistedMarkers` and `savedMarkers` are managed in separate nodes. Social managment like `friends` and incoming `requests` are also handled here. All image/video data is separated from this database and stored in `firebase cloud storage`, relevant uri information is stored in nodes. Model described previously wraps all logic and provides attachable listeners to other view-controller components.
+Consist of `realtime database` for managing user data. User data is bound to all authenticated users and includes attributes such as an email address and other less relevant data. Besides user data `markers`, `vistedMarkers` and `savedMarkers` are managed in separate nodes. Social management like `friends` and incoming `requests` are also handled here. All image/video data is separated from this database and stored in `firebase cloud storage`, relevant uri information is stored in nodes. Model described previously wraps all logic and provides attachable listeners to other view-controller components.
 
 ![screenshot_home](meta/Screenshot_2018-09-08-15-53-57.png "screenshot") ![screenshot_navigation](meta/Screenshot_2018-09-08-15-59-30.png  "screenshot") ![screenshot_new](meta/Screenshot_2018-09-08-15-56-57.png "screenshot") ![screenshot_map](meta/Screenshot_2018-09-08-15-58-57.png "screenshot")
 
@@ -47,4 +47,3 @@ From Android Studio:
 1. ***Build*** menu
 2. ***Generate Signed APK...***
 3. Fill in the keystore information *(you only need to do this once manually and then let Android Studio remember it)*
-
