@@ -1,7 +1,7 @@
 # mapper
 Android location-based crowdsourcing application.
 
-![alt text][screenshot_home] [screenshot_home]: meta/Screenshot_2018-09-08-15-53-57.png ![alt text][screenshot_navigation] [screenshot_navigation]: meta/Screenshot_2018-09-08-15-59-30.png ![alt text][screenshot_discover] [screenshot_discover]: meta/Screenshot_2018-09-08-16-00-30.png ![alt text][screenshot_map] [screenshot_map]: meta/Screenshot_2018-09-08-15-58-57.png
+![screenshot_home](meta/Screenshot_2018-09-08-15-53-57.png "screenshot") ![screenshot_navigation](meta/Screenshot_2018-09-08-15-59-30.png  "screenshot") ![screenshot_new](meta/Screenshot_2018-09-08-15-56-57.png "screenshot") ![screenshot_marker](meta/Screenshot_2018-09-08-15-57-24.png "screenshot") ![screenshot_map](meta/Screenshot_2018-09-08-15-58-57.png "screenshot") ![screenshot_discover](meta/Screenshot_2018-09-08-16-00-30.png "screenshot")
 
 ## Installation
 Clone this repository and import into **Android Studio**
@@ -31,3 +31,4 @@ From Android Studio:
 1. ***Build*** menu
 2. ***Generate Signed APK...***
 3. Fill in the keystore information *(you only need to do this once manually and then let Android Studio remember it)*
+
