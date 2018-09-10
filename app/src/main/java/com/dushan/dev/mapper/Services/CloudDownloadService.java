@@ -21,12 +21,10 @@ public class CloudDownloadService extends BaseService {
 
     private static final String TAG = "CloudDownloadService";
 
-    /** Actions **/
     public static final String ACTION_DOWNLOAD = "action_download";
     public static final String DOWNLOAD_COMPLETED = "download_completed";
     public static final String DOWNLOAD_ERROR = "download_error";
 
-    /** Extras **/
     public static final String EXTRA_DOWNLOAD_PATH = "extra_download_path";
     public static final String EXTRA_BYTES_DOWNLOADED = "extra_bytes_downloaded";
 
@@ -35,8 +33,6 @@ public class CloudDownloadService extends BaseService {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        // Initialize Storage
         mStorageRef = FirebaseStorage.getInstance().getReference();
     }
 
@@ -51,7 +47,6 @@ public class CloudDownloadService extends BaseService {
         Log.d(TAG, "onStartCommand:" + intent + ":" + startId);
 
         if (ACTION_DOWNLOAD.equals(intent.getAction())) {
-            // Get the path to download from the intent
             String downloadPath = intent.getStringExtra(EXTRA_DOWNLOAD_PATH);
             downloadFromPath(downloadPath);
         }

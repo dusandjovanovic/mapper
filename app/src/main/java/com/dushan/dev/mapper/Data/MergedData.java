@@ -66,7 +66,7 @@ public class MergedData {
 
     public ArrayList<Marker> recentMarkers() {
         ArrayList<Marker> recentMarkers = new ArrayList<Marker>();
-        long lastTwoDays = TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis()) - 1;
+        long lastTwoDays = TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis()) - 2;
         for (Marker marker: mergedMarkers)
             if (TimeUnit.MILLISECONDS.toDays(marker.getDateTime()) >= lastTwoDays)
                 recentMarkers.add(marker);
@@ -88,8 +88,10 @@ public class MergedData {
         markerLocation.setLatitude(marker.getLatitude());
         markerLocation.setLongitude(marker.getLongitude());
 
-        if (distanceBetween(marker.getLatitude(), marker.getLongitude(), currentLocation.latitude, currentLocation.longitude)
-                > (double)filterDiameter)
+        float[] distance = new float[3];
+        android.location.Location.distanceBetween(marker.getLatitude(), marker.getLongitude(), currentLocation.latitude, currentLocation.longitude, distance);
+
+        if (distance[0] > (float)filterDiameter*1000F)
             return false;
 
         if (!filterCategory.equals(CATEGORY_ALL) && !filterCategory.equals(marker.getCategory()))
@@ -103,20 +105,6 @@ public class MergedData {
                 return true;
 
         return false;
-    }
-
-    private double distanceBetween(double lat_a, double lng_a, double lat_b, double lng_b ) {
-        double earthRadius = 3958.75;
-        double latDiff = Math.toRadians(lat_b-lat_a);
-        double lngDiff = Math.toRadians(lng_b-lng_a);
-        double a = Math.sin(latDiff /2) * Math.sin(latDiff /2) +
-                Math.cos(Math.toRadians(lat_a)) * Math.cos(Math.toRadians(lat_b)) *
-                        Math.sin(lngDiff /2) * Math.sin(lngDiff /2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        double distance = earthRadius * c;
-
-        double meterConversion = 1609;
-        return distance * meterConversion;
     }
 
     public void setListener(MergedUpdatedEventListener listener) {

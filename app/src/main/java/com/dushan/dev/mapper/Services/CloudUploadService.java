@@ -22,12 +22,10 @@ public class CloudUploadService extends BaseService {
 
     private static final String TAG = "CloudUploadService";
 
-    /** Intent Actions **/
     public static final String ACTION_UPLOAD = "action_upload";
     public static final String UPLOAD_COMPLETED = "upload_completed";
     public static final String UPLOAD_ERROR = "upload_error";
 
-    /** Intent Extras **/
     public static final String EXTRA_FILE_URI = "extra_file_uri";
     public static final String EXTRA_DOWNLOAD_URL = "extra_download_url";
 
@@ -45,9 +43,7 @@ public class CloudUploadService extends BaseService {
         return null;
     }
 
-    // Called by the system every time a client explicitly starts the service by calling Context.startService(Intent),
-    // providing the arguments it supplied and a unique integer token representing the start request.
-    // Do not call this method directly.
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand:" + intent + ":" + startId);

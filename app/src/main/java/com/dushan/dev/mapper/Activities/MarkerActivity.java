@@ -4,9 +4,9 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,17 +16,29 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
 import com.dushan.dev.mapper.Data.Marker;
 import com.dushan.dev.mapper.Data.SavedMarkerData;
 import com.dushan.dev.mapper.R;
 import com.dushan.dev.mapper.Services.CloudDownloadService;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
@@ -40,7 +52,7 @@ public class MarkerActivity extends AppCompatActivity {
     private ImageView markerToolbarImage;
     private FloatingActionButton markerAddFavoriteButton;
     private Button markerGetDirectionsButton, markerVideoViewButton;
-    private VideoView markerVideoView;
+    private PlayerView markerPlayerView;
 
     Marker marker;
     SavedMarkerData savedData;
@@ -128,9 +140,11 @@ public class MarkerActivity extends AppCompatActivity {
         markerGetDirectionsButton= findViewById(R.id.markerGetDirectionsButton);
         markerToolbarImage = findViewById(R.id.markerToolbarImage);
         markerVideoViewButton = findViewById(R.id.markerVideoViewButton);
-        markerVideoView = findViewById(R.id.markerVideoView);
-        if (markerVideo)
+        markerPlayerView = findViewById(R.id.markerVideoView);
+        if (markerVideo) {
             markerVideoViewButton.setVisibility(View.VISIBLE);
+            markerPlayerView.setVisibility(View.VISIBLE);
+        }
         setupListeners();
     }
 
@@ -140,7 +154,10 @@ public class MarkerActivity extends AppCompatActivity {
         markerDescriptionText.setText(marker.getDescription());
         markerAddress.setText(marker.getAddress());
         markerCategoryText.setText(marker.getCategory());
-        markerDateTimeText.setText(new Date(marker.getDateTime() * 1000).toString());
+        Date date = new java.util.Date(marker.getDateTime());
+        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = sdf.format(date);
+        markerDateTimeText.setText(formattedDate);
         Glide.with(this).load(marker.getImageURL()).into(markerToolbarImage);
     }
 
@@ -180,18 +197,23 @@ public class MarkerActivity extends AppCompatActivity {
                     switch (intent.getAction()) {
                         case CloudDownloadService.DOWNLOAD_COMPLETED:
                             Uri uri = Uri.parse(intent.getStringExtra(CloudDownloadService.EXTRA_DOWNLOAD_PATH));
-//                            File outFile = new File(getCacheDir(), uri.getLastPathSegment());
-//                            markerVideoView.setVideoPath(outFile.getAbsolutePath());
-                            MediaController mc = new MediaController(MarkerActivity.this);
-                            markerVideoView.setMediaController(mc);
-                            markerVideoView.setVideoURI(uri);
-                            markerVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                                @Override
-                                public void onPrepared(MediaPlayer mediaPlayer) {
-                                    markerVideoView.start();
-                                }
-                            });
-//                            markerVideoView.requestFocus();
+                            Handler mainHandler = new Handler();
+                            BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+                            TrackSelection.Factory videoTrackSelectionFactory =
+                                    new AdaptiveTrackSelection.Factory(bandwidthMeter);
+                            DefaultTrackSelector trackSelector =
+                                    new DefaultTrackSelector(videoTrackSelectionFactory);
+                            SimpleExoPlayer player =
+                                    ExoPlayerFactory.newSimpleInstance(context, trackSelector);
+                            markerPlayerView.setPlayer(player);
+
+                            DefaultBandwidthMeter mBandwidthMeter = new DefaultBandwidthMeter();
+                            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(context,
+                                    Util.getUserAgent(context, "yourApplicationName"), mBandwidthMeter);
+                            MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+                                    .createMediaSource(uri);
+                            player.prepare(videoSource);
+                            player.setPlayWhenReady(true);
 
                             break;
                         case CloudDownloadService.DOWNLOAD_ERROR: break;

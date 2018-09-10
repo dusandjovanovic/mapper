@@ -5,10 +5,6 @@ import android.net.Uri;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 @IgnoreExtraProperties
 public class User {
     private String name;
@@ -35,8 +31,8 @@ public class User {
         this.about = about;
         this.image = image.toString();
         this.reachImpact = 0;
-        this.latitude = 0.0;
-        this.longitude = 0.0;
+        this.latitude = 43.3209022;
+        this.longitude = 21.8957589;
     }
 
     public String getName() {

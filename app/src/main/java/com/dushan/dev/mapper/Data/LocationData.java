@@ -96,36 +96,28 @@ public class LocationData {
     };
 
     private boolean usersNearby() {
-        for (User user: socialData.getSocialFriends())
-            if (distanceBetween(location.getLatitude(), location.getLongitude(), user.getLatitude(), user.getLongitude()) <= 30)
+        for (User user: socialData.getSocialFriends()) {
+            float[] distance = new float[3];
+            android.location.Location.distanceBetween(location.getLatitude(), location.getLongitude(), user.getLatitude(), user.getLongitude(), distance);
+            if (distance[0] <= 30)
                 return true;
+        }
         return false;
     }
 
     private void markersNearby() {
-        for (Marker marker: socialData.getSocialMarkers())
-            if (distanceBetween(location.getLatitude(), location.getLongitude(), marker.getLatitude(), marker.getLongitude()) <= 50)
+        for (Marker marker: socialData.getSocialMarkers()) {
+            float[] distance = new float[3];
+            android.location.Location.distanceBetween(location.getLatitude(), location.getLongitude(), marker.getLatitude(), marker.getLongitude(), distance);
+            if (distance[0] <= 30)
                 socialData.visitedMarkerEvent(marker);
+        }
     }
 
     private boolean applicationBackground() {
         ActivityManager.RunningAppProcessInfo appProcessInfo = new ActivityManager.RunningAppProcessInfo();
         ActivityManager.getMyMemoryState(appProcessInfo);
         return !(appProcessInfo.importance == IMPORTANCE_FOREGROUND || appProcessInfo.importance == IMPORTANCE_VISIBLE);
-    }
-
-    private double distanceBetween(double lat_a, double lng_a, double lat_b, double lng_b ) {
-        double earthRadius = 3958.75;
-        double latDiff = Math.toRadians(lat_b-lat_a);
-        double lngDiff = Math.toRadians(lng_b-lng_a);
-        double a = Math.sin(latDiff /2) * Math.sin(latDiff /2) +
-                Math.cos(Math.toRadians(lat_a)) * Math.cos(Math.toRadians(lat_b)) *
-                        Math.sin(lngDiff /2) * Math.sin(lngDiff /2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        double distance = earthRadius * c;
-
-        double meterConversion = 1609;
-        return distance * meterConversion;
     }
 
     public void changeLocation(double latitude, double longitude) {

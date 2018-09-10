@@ -162,7 +162,6 @@ public class SocialData {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             String delta = dataSnapshot.getKey();
-            //notificationHandler.createSimpleNotification(context, "You have a new friend request.");
             addUserRequest(delta);
             if(requestsUpdatedListener != null)
                 requestsUpdatedListener.onRequestsUpdated();

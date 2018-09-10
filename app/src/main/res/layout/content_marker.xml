@@ -17,17 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <VideoView
-            android:id="@+id/markerVideoView"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_margin="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="4:3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
         <android.support.v7.widget.CardView
             android:id="@+id/cardAuthor"
             android:layout_width="fill_parent"
@@ -189,6 +178,16 @@
             android:visibility="gone"
             android:layout_marginTop="24dp"
             android:textColor="@color/tabHighlightColor" />
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/markerVideoView"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/markerVideoViewButton"
+            android:layout_height="300dp"
+            android:layout_marginTop="4dp"
+            android:padding="4dp"
+            android:visibility="gone">
+        </com.google.android.exoplayer2.ui.PlayerView>
     </RelativeLayout>
 
 </android.support.v4.widget.NestedScrollView>

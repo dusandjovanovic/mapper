@@ -51,7 +51,6 @@ public class FriendsAddActivity extends AppCompatActivity {
     private List<BluetoothDevice> bluetoothDevices;
     private BluetoothServerSocket mmServerSocket;
 
-
     private Toolbar toolbar;
     private TextView sendTab, pendingTab;
     private View sendHighlight, pendingHighlight;
@@ -65,7 +64,6 @@ public class FriendsAddActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String userId;
 
-    private ArrayList<User> modelList = new ArrayList<>();
     private ArrayList<User> checkedList = new ArrayList<>();
 
     @Override
@@ -97,17 +95,16 @@ public class FriendsAddActivity extends AppCompatActivity {
         selectedTab = SEND_TAB;
         connectViews();
         initializeRecyclerView();
-        setAdapter();
+
         Intent brs = new Intent(this, BluetoothReceiverService.class);
         startService(brs);
-
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter != null){
            startDiscovery();
 
         } else {
-            Toast.makeText(getApplicationContext(), "Cannot use bluetooth services bla bla", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Bluetooth service unavailable", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -122,11 +119,10 @@ public class FriendsAddActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.friendsAddAction) {
-            for (User user : checkedList){
+            for (User user : checkedList)
                 socialData.acceptUserRequest(user.getKey());
-            }
             checkedList.clear();
-            return true;
+            finish();
         }
         else if (id == android.R.id.home) {
             finish();
@@ -134,8 +130,6 @@ public class FriendsAddActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
 
     private void connectViews() {
         sendTab = findViewById(R.id.sendTab);
@@ -151,14 +145,11 @@ public class FriendsAddActivity extends AppCompatActivity {
         mBluetoothAdapter.startDiscovery();
     }
 
-
-
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                Toast.makeText(getApplicationContext(), device.getName(), Toast.LENGTH_SHORT).show();
                 bluetoothDevices.add(device);
                 setSendAdapter();
             }
@@ -194,8 +185,8 @@ public class FriendsAddActivity extends AppCompatActivity {
             }
             String uid = "";
             try {
-                 byte[] recievedArray = new byte[28];
-                 mmSocket.getInputStream().read(recievedArray);
+                byte[] recievedArray = new byte[28];
+                mmSocket.getInputStream().read(recievedArray);
                 uid = new String(recievedArray);
                 List<User> users = socialData.getSocialRequests();
                 boolean requestSent = false;
@@ -205,13 +196,12 @@ public class FriendsAddActivity extends AppCompatActivity {
                         break;
                     }
                 }
-                if (!requestSent) {
+                if (!requestSent)
                     socialData.sendUserRequest(uid);
-                }
             } catch (IOException ex){
 
             }
-            Toast.makeText(getApplicationContext(), "client socket works, number is " + uid
+            Toast.makeText(getApplicationContext(), "Received with Bluetooth: " + uid
                      , Toast.LENGTH_SHORT).show();
         }
 
@@ -222,7 +212,6 @@ public class FriendsAddActivity extends AppCompatActivity {
             }
         }
     }
-
 
     private void setUpListeners() {
         swipeRefreshRecyclerList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -289,6 +278,7 @@ public class FriendsAddActivity extends AppCompatActivity {
     }
 
     private void setAdapter() {
+        checkedList.clear();
         mAdapter = new CheckboxListAdapter(FriendsAddActivity.this, socialData.getSocialRequests());
         recyclerView.setAdapter(mAdapter);
 
@@ -296,9 +286,15 @@ public class FriendsAddActivity extends AppCompatActivity {
             @Override
             public void onChecked(View view, boolean isChecked, int position, User model) {
                 if (isChecked)
-                    checkedList.add(modelList.get(position));
+                    checkedList.add(socialData.getSocialRequests().get(position));
                 else
-                    checkedList.remove(modelList.get(position));
+                    checkedList.remove(socialData.getSocialRequests().get(position));
+            }
+        });
+        mAdapter.SetOnItemClickListener(new CheckboxListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position, User model) {
+                return;
             }
         });
     }
@@ -327,5 +323,4 @@ public class FriendsAddActivity extends AppCompatActivity {
         super.onDestroy();
         unregisterReceiver(mReceiver);
     }
-
 }

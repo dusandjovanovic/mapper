@@ -52,9 +52,9 @@
     <string name="address">Address</string>
     <string name="category">Category</string>
     <string name="get_directions">Take me there</string>
-    <string name="stream">Stream video content</string>
+    <string name="stream">Play video content</string>
     <string name="keywords">Enter keywords</string>
-    <string name="date_added">Date marker was added</string>
+    <string name="date_added">Date and time</string>
 
     <!--Services-->
     <string name="progress_uploading">Background service: uploading</string>

@@ -39,6 +39,9 @@
         <service
             android:name=".Services.LocationService"
             android:exported="false" />
+        <service android:name=".Threads.BluetoothReceiverService"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity android:name=".Activities.GetStartedActivity" />
         <activity android:name=".Activities.LoginActivity" />
@@ -77,15 +80,6 @@
         <activity android:name=".Activities.SearchActivity" />
         <activity android:name=".Activities.StatisticsActivity" />
         <activity android:name=".Activities.FriendsAddActivity" />
-
-        <service
-            android:name=".Services.BluetoothService"
-            android:enabled="true"
-            android:exported="true"></service>
-
-        <service android:name=".Threads.BluetoothReceiverService"
-            android:enabled="true"
-            android:exported="true" />
     </application>
 
 </manifest>

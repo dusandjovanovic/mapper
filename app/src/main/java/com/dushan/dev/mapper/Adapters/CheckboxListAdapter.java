@@ -64,15 +64,12 @@ public class CheckboxListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             genericViewHolder.itemCheckList.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
                     if (isChecked) {
                         checkSet.add(position);
                     } else {
                         checkSet.remove(position);
                     }
-
                     mOnCheckedListener.onChecked(buttonView, isChecked, position, modelList.get(position));
-
                 }
             });
         }

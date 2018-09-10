@@ -38,7 +38,7 @@ public class BluetoothReceiverService extends Service {
             }).start();
 
         } else {
-            Toast.makeText(getApplicationContext(), "Cannot use bluetooth services bla bla", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Bluetooth service unavailable.", Toast.LENGTH_SHORT).show();
         }
         return START_STICKY;
     }

@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -36,8 +33,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -186,23 +181,23 @@ public class DiscoverActivity extends AppCompatActivity
 
     private void initiateActivity() {
         setupListeners();
-        initiateRecyclerView(markerData.getMarkers());
+        initiateRecyclerView(markerData.recentMarkers());
     }
 
     private void initiateRecyclerView(List<Marker> markerList) {
         if (markersAdapter == null) {
             ClickListener listener = (view, position) -> {
                 Intent markerActivity = new Intent(DiscoverActivity.this, MarkerActivity.class);
-                markerActivity.putExtra("name", markerData.getMarkers().get(position).getName());
-                markerActivity.putExtra("author", markerData.getMarkers().get(position).getAuthor());
-                markerActivity.putExtra("address", markerData.getMarkers().get(position).getAddress());
-                markerActivity.putExtra("description", markerData.getMarkers().get(position).getDescription());
-                markerActivity.putExtra("category", markerData.getMarkers().get(position).getCategory());
-                markerActivity.putExtra("imageURL", markerData.getMarkers().get(position).getImageURL());
-                markerActivity.putExtra("latitude", markerData.getMarkers().get(position).getLatitude());
-                markerActivity.putExtra("longitude", markerData.getMarkers().get(position).getLongitude());
-                markerActivity.putExtra("dateTime", markerData.getMarkers().get(position).getDateTime());
-                markerActivity.putExtra("markerKey", markerData.getMarkers().get(position).getKey());
+                markerActivity.putExtra("name", markerData.recentMarkers().get(position).getName());
+                markerActivity.putExtra("author", markerData.recentMarkers().get(position).getAuthor());
+                markerActivity.putExtra("address", markerData.recentMarkers().get(position).getAddress());
+                markerActivity.putExtra("description", markerData.recentMarkers().get(position).getDescription());
+                markerActivity.putExtra("category", markerData.recentMarkers().get(position).getCategory());
+                markerActivity.putExtra("imageURL", markerData.recentMarkers().get(position).getImageURL());
+                markerActivity.putExtra("latitude", markerData.recentMarkers().get(position).getLatitude());
+                markerActivity.putExtra("longitude", markerData.recentMarkers().get(position).getLongitude());
+                markerActivity.putExtra("dateTime", markerData.recentMarkers().get(position).getDateTime());
+                markerActivity.putExtra("markerKey", markerData.recentMarkers().get(position).getKey());
                 startActivity(markerActivity);
             };
             markersAdapter = new MarkersAdapter(getApplicationContext(), markerList, listener);
@@ -218,7 +213,7 @@ public class DiscoverActivity extends AppCompatActivity
         markerData.setListener(new MergedData.MergedUpdatedEventListener() {
             @Override
             public void onUpdated() {
-                initiateRecyclerView(markerData.getMarkers());
+                initiateRecyclerView(markerData.recentMarkers());
             }
         });
     }
@@ -253,20 +248,12 @@ public class DiscoverActivity extends AppCompatActivity
         for (Marker marker: markerData.recentMarkers())
             heatMap.add(new LatLng(marker.getLatitude(), marker.getLongitude()));
 
-        mProvider = new HeatmapTileProvider.Builder()
-                .data(heatMap)
-                .radius(50)
-                .build();
-
-        mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-    }
-
-    private BitmapDescriptor getMarkerIconFromDrawable(Drawable drawable) {
-        Canvas canvas = new Canvas();
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        canvas.setBitmap(bitmap);
-        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        drawable.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
+        if (heatMap.size() > 0) {
+            mProvider = new HeatmapTileProvider.Builder()
+                    .data(heatMap)
+                    .radius(50)
+                    .build();
+            mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+        }
     }
 }
